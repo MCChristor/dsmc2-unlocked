@@ -1,9 +1,9 @@
 # Research Notes — Difficulties and Insights
 
-This document tells the story behind the findings. It gives the problems, the
-surprises, and the ideas that unblocked the work. It stays at the level of what
-happened and why it mattered. It does not give methods, addresses, or access
-steps.
+This document tells the story behind the findings — the problems, the surprises,
+and the ideas that unblocked the work, at the level of what happened and why it
+mattered. The concrete methods, addresses, and access steps are in the other docs
+and the [tools/](../tools) folder.
 ## Problem 1 — getting data off the camera was slow
 
 The low-level read path is very slow. It moves only a few kilobytes per second.

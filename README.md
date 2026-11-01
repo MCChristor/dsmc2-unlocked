@@ -1,23 +1,30 @@
 # RED DSMC2 — Owner's Reverse-Engineering Notes
 
 This repository holds independent reverse-engineering of the **RED DSMC2** camera
-platform. It is for owners who want to keep discontinued bodies and media running.
-The reference body is a SCARLET-W 5K on firmware 7.4.1.
+platform. It is for owners who want to keep discontinued bodies and their
+end-of-life media running. The reference body is a SCARLET-W 5K on firmware 7.4.1.
 
 This repository documents *what the platform is*, *what is possible* with it, and
 *how to do it*. It publishes the keys, the methods, the access steps, and working
-tools — the camera and its media are discontinued and unsupported, so the point is
-to let owners keep them running.
+tools, so that owners can maintain hardware RED no longer sells.
 
-> **Context.** This is independent research on hardware the author owns. RED has
-> **discontinued** the DSMC2 line and its MINI-MAG media. The magazines are no
-> longer sold or serviced. Nothing here harms a product on sale or a service that
-> RED offers. The goal is repair and preservation.
+> **Context.** This is independent research on hardware the author owns. The goal
+> is repair and preservation. The focus is the **MINI-MAG media**, which RED has
+> discontinued and no longer makes parts for — so there is no RED media product or
+> service that this work competes with.
 >
-> RED lists RED MINI-MAG 1TB, 512GB and 240GB on its official [Discontinued
-> Products](https://support.reddigitalcinema.com/hc/en-us/articles/1500000253342-Discontinued-Products)
-> page, marked "repair parts no longer available". RED wound the DSMC2 line down
-> after the 2024 Nikon acquisition. It is no longer manufactured.
+> RED **stopped selling** DSMC2 camera bodies in December 2022 ([Discontinued
+> Sales: DSMC2 and RANGER](https://support.red.com/hc/en-us/articles/12932130721299-Discontinued-Sales-DSMC2-and-RANGER)).
+> RED still offers technical support and service for the bodies, "parts
+> availability permitting", and DSMC2 is **not** on RED's
+> [no-longer-repairable list](https://support.reddigitalcinema.com/hc/en-us/articles/1500000253342-Discontinued-Products)
+> (which names RED ONE, MYSTERIUM-X and DRAGON). After the Nikon acquisition, Nikon
+> stated it planned no changes to RED's lineup and that warranty, repair and
+> product support would continue.
+>
+> The **RED MINI-MAG 1TB, 512GB and 240GB** media, by contrast, *is* on that
+> discontinued-products page, marked "repair parts no longer available" — which is
+> why this repository documents the cheap-SSD media path in full.
 
 ## Contents
 
@@ -30,6 +37,8 @@ to let owners keep them running.
 | [docs/keys.md](docs/keys.md) | The keys: where they live, how they were recovered, what each opens |
 | [docs/serial-shell.md](docs/serial-shell.md) | Enabling and using the DSMC2 debug shell |
 | [docs/log-decode.md](docs/log-decode.md) | Decoding the camera's obfuscated log |
+| [docs/shell-commands.md](docs/shell-commands.md) | Debug-shell command reference |
+| [docs/feature-unlock.md](docs/feature-unlock.md) | Features, capabilities, and model identity |
 | [docs/research-notes.md](docs/research-notes.md) | Difficulties, insights, and the research story |
 | [media/](media/) | MINI-MAG and compatible SSDs |
 

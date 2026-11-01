@@ -7,6 +7,8 @@
 - [keys.md](keys.md) — the keys: where they live, how they were recovered, what each opens
 - [serial-shell.md](serial-shell.md) — enabling and using the DSMC2 debug shell
 - [log-decode.md](log-decode.md) — decoding the camera's obfuscated log
+- [shell-commands.md](shell-commands.md) — debug-shell command reference
+- [feature-unlock.md](feature-unlock.md) — features, capabilities, and model identity
 - [research-notes.md](research-notes.md) — difficulties, insights, and the research story
 
 Tools and hardware live in [../tools/](../tools) and [../hardware/](../hardware).
