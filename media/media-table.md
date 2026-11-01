@@ -75,8 +75,7 @@ model-string gate matches:
 Two things are worth noting:
 
 - Some SKUs report a **raw OEM part number** as the title (the Kingston and
-  Micron ones). Others report a **RED-branded** title (`RED 1TB V1`,
-  `RED 960GB V3`). Either form is just a string. The camera matches it exactly.
+  Micron ones). Others report a **RED-branded** title (`RED 960GB V3`). Either form is just a string. The camera matches it exactly.
 - The **KipperTie 2 TB** reports its **own** title, `KipperTie Longtake 2TB V1`.
   The camera still accepts it. So the approved-partner titles are part of the
   whitelist too, not only RED's own.
