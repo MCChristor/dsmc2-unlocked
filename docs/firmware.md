@@ -47,6 +47,11 @@ A v2 package has **one** encryption layer. It is a standard design:
    (SHA-1, with a fixed label)**. The matching RSA private key is inside the camera
    firmware. So the camera can recover the content key. A person without that key
    cannot.
+
+   Two different RSA systems exist here. The key pair above **decrypts the content
+   key**. It is not the firmware **signing** key. RED keeps the signing private key.
+   The camera holds only the matching public key and uses it to check a package. So
+   a package can be opened, but a modified package cannot be signed.
 3. **RC4 protects the body, then zlib compresses the content.** You remove the RC4
    layer with the content key. Under it the sections are **zlib-compressed and
    readable**. The bootloader section and the slot-image section both decompress to
@@ -74,8 +79,9 @@ The real situation:
   memory, and jumps to it. It holds no key.
 - **A v2 package has only the one layer above.** With the right key it fully
   decompresses to plain files.
-- **A v3 combo opens with two held keys** — one for the table of contents, one for
-  the v2 packages inside. Nothing else is sealed.
+- **A v3 combo opens with two held keys** — one for the table of contents, and one
+  that unwraps the content key of each v2 package inside. Each v2 package still has
+  its own random content key. Nothing else is sealed.
 
 A full offline unpack was checked end to end against the camera. The firmware image
 unpacked from a combo is **byte-for-byte the same** as the image on the camera. So
