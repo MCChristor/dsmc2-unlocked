@@ -92,5 +92,6 @@ the firmware, not from reports.
   runs HELIUM and MONSTRO as in the SCARLET-W build. Same model strings, same
   signature check, same throttle behaviour.
 
-So the model whitelist and the SMART page-0x90 signature are the authentication on
-every DSMC2 body. A body does not add a different or deeper media check.
+So the media check is the same on every DSMC2 body. The model string selects the
+media row and speed. The SMART page-0x90 signature sets full speed. A readable
+page 0x90 is required to mount. No body adds a different or deeper media check.
