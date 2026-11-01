@@ -30,6 +30,15 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
   was **not verified on the device**. So treat specific feature gains as unproven
   until tested. Crossgrades only make sense inside one sensor family, and only for
   the software-gated layer.
+- **HDMI monitor output tops out at 1080p.** The firmware's display-preset set
+  offers only `1080P (HD)` and `720P (HD)` on the brain HDMI port; the only UHD
+  display presets are `DISPLAY_PRESET_UHDSDI_*` and the rear `UHDSDI` channel —
+  i.e. 4K monitoring exists **only over SDI**, never HDMI. The `BRAIN_HDMI` preset
+  family has no UHD variant. This is not a software gate: the HDMI path runs
+  through IOB0 and the OMAP display subsystem ([platform.md](platform.md)), so the
+  port is a 1080p-class link. To get the camera's 4K picture onto an HDMI display,
+  convert its 4K SDI externally — which is exactly what RED's own HDK board does
+  (SDI→HDMI, [peripheral-firmware.md](peripheral-firmware.md)).
 
 ## In development — to be announced
 

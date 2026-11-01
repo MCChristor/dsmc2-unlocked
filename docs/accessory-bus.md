@@ -204,3 +204,63 @@ The two still-unpublished pieces are the exact serial framing of the bus and the
 precise byte layout of the `ModuleDescriptor` TLV. Both are recoverable: the TLV
 layout from an accessory's own `peripherals/reardevices/*.bin` image, and the
 framing from a single logic capture on a genuine module's connector.
+
+## Monitors: video, identity, and touch
+
+LCD and EVF monitors are a special case of the bus. They attach on monitor ports
+rather than the generic rear-device UART, and the brain drives three separate
+links, not one.
+
+1. **Video out — MIPI DSI.** The brain's monitor display pipe sends a raster over
+   MIPI DSI to the panel (firmware refers to the LG panels and their bridge, e.g.
+   `7 inch LG MIPI LCD GEO GW3400`, and waits for panel lock via
+   `LCDPanel_wait_for_video_sync`). The raster is the monitor-pipe output, which is
+   why monitor and HDMI share the 1080p-class ceiling in
+   [whats-possible.md](whats-possible.md).
+2. **Identity — EDID over I2C.** The brain reads the panel's EDID EEPROM to decide
+   the monitor **type / sub-type**, and from that the display preset, brightness
+   curve, and which touch driver to initialise (`EVF/LCD Port - EDID device not
+   present`, `Invalid monitor type detected %d`, `can't find brightness for monitor
+   sub_type`). Presence detection is EDID-based.
+3. **Touch in — Atmel maXTouch over I2C.** The touch stack is specifically
+   maXTouch: `atmel_init_touch_driver` (`0x80758b28`),
+   `atmel_start_touch_configuration` (`0x80759058`),
+   `atmel_check_for_touch_msg` (`0x8075924c`), `atmel_get_touch_data` (`0x80759384`),
+   `atmel_read/write_touch_data_16addr` (`0x80759f44` / `0x80759e38`),
+   `atmelgetmaxxmaxy` (`0x80759adc`). Register addressing is **16-bit**, the
+   maXTouch convention.
+
+### What the touch init does (from the disassembly)
+
+`atmel_init_touch_driver` performs a textbook maXTouch bring-up:
+
+- I2C read of **7 bytes at register `0x0000`** — the maXTouch **ID Information
+  Block** `[family, variant, version, build, matrix_X, matrix_Y, object_count]`.
+  The routine keeps `version` (block byte +2) and `object_count` (block byte +6).
+- I2C read of **`object_count × 6` bytes** — the **Object Table** (each entry is
+  the standard 6-byte maXTouch record). The firmware allocates `object_count*6 + 1`
+  and reads the table in one transfer.
+- From there it parses the objects and polls **T5 messages** for touch reports,
+  signalled on the maXTouch **CHG** change line.
+
+On a read failure the init aborts and logs `Failed to init atmel touch driver`.
+
+### DIY: any panel, including a non-maXTouch digitizer
+
+A monitor the camera will accept must (a) present an **EDID** the brain maps to a
+known monitor type, and (b) answer as a **maXTouch** touch controller. Video is a
+display link, not authenticated.
+
+The catch is the touch controller. A panel with a different digitizer — for
+example a FocalTech FT5x06 (I2C `0x38`), common on third-party 7" panels — speaks
+a different register map, so `atmel_init_touch_driver` fails and touch is dead
+while video still works. The fix is a small **translator**: a tiny MCU that reads
+the panel's real touch controller as an I2C master and **re-presents a
+maXTouch-compatible slave** to the camera (ID block at `0x0000`, an object table,
+T5/T6/T7/T9 objects, and the CHG line). The firmware is unchanged. The surest
+object table is one cloned from a genuine RED touch monitor — a single I2C read of
+its reg `0x0000` block and object table dumps exactly what the brain expects.
+
+> **Status:** the maXTouch init sequence and symbol addresses are read from the
+> firmware disassembly (confirmed). A working translator has not been built or
+> camera-tested; treat it as "the camera side is understood", not a finished board.
