@@ -72,10 +72,12 @@ independently:
 - Reduser analysis of JinniTech's method: the camera reads only the **SSD model
   number** and the **SMART log** for verification. This is exactly the two gates
   here.
-- Approved third-party mags (Cinelux Nexa-Mag, KipperTie Longtake 2 TB) pass this
-  same lock with stock SSDs.
+- Approved third-party mags exist and pass the model-string and signature gates.
+  They are purpose-built drives, not stock SSDs. A working mag needs correct
+  controller behaviour (power management, hot-plug, sustained write), not only the
+  signature.
 - RED's own statement that the custom part "is not on the drives, but in the
-  camera" matches the finding: the drive is a stock SSD; the camera validates.
+  camera" matches the finding that the camera does the validation.
 
 ## Controller and MPTool notes
 
