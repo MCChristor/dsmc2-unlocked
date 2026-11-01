@@ -1,14 +1,17 @@
 # Compatible SSDs — What to Buy (2026)
 
-The camera matches a **model string**, not a part number. So the original RED OEM
-drives (Delkin, Innodisk, Centon, Virtium) being discontinued does not matter.
-Any SATA SSD that can present an approved model string works.
+Written in simplified technical English.
+
+The camera matches a **model string**, not a part number. So it does not matter
+that the original RED OEM drives (Delkin, Innodisk, Centon, Virtium) are
+discontinued. Any SATA SSD that can present an approved model string works.
 
 ## Rules
 
-- **SATA only.** mSATA or M.2-SATA. **Not** NVMe (M.2 PCIe), not CFexpress/CF/SD.
+- **SATA only.** Use mSATA or M.2-SATA. Do **not** use NVMe (M.2 PCIe). Do not
+  use CFexpress/CF/SD.
 - Any drive near **500 MB/s** read comfortably meets the ~300 MB/s R3D data rate.
-- The controller and NAND do not gate access — only the model string and the
+- The controller and NAND do not gate access. Only the model string and the
   signature do. They only affect speed and endurance.
 
 ## Buyable mSATA SSDs
@@ -20,23 +23,23 @@ Any SATA SSD that can present an approved model string works.
 | Fanxiang / SHARKSPEED / Kingchuxing mSATA | 512 GB / 1 TB | eBay / Amazon, ~30–130 USD, budget NAND. |
 | Samsung PM851 mSATA 1 TB (used) | 1 TB | Special — see the easy path. |
 
-mSATA is a legacy form factor but still made and in stock. M.2-SATA is the newer
-option and allows capacities past 960 GB (KipperTie's approved mag uses M.2-SATA
-at 2 TB).
+mSATA is a legacy form factor. It is still made and in stock. M.2-SATA is the
+newer option. M.2-SATA allows capacities past 960 GB. KipperTie's approved mag
+uses M.2-SATA at 2 TB.
 
 ## Easy path — Samsung PM851 1 TB (low difficulty)
 
 A genuine Samsung PM851 mSATA 1 TB reports the model string
-`SAMSUNG MZMTE1T0HMJH-00000` natively — which is an approved string in the media
+`SAMSUNG MZMTE1T0HMJH-00000` natively. This is an approved string in the media
 table. So:
 
-1. Buy a used Samsung PM851 1 TB mSATA. Common and cheap.
+1. Buy a used Samsung PM851 1 TB mSATA. It is common and cheap.
 2. Fit it to the [adapter board](hardware.md).
-3. Write the correct SMART page-0x90 signature for its identity (offline, with
-   the formula in [authentication.md](authentication.md)).
+3. Write the correct SMART page-0x90 signature for its identity. Do this
+   offline, with the formula in [authentication.md](authentication.md).
 
-No model-string flashing. The drive is 1 TB — larger than RED's biggest 960 GB
-mag. The only real work is the connector board.
+There is no model-string flashing. The drive is 1 TB. This is larger than RED's
+biggest 960 GB mag. The only real work is the connector board.
 
 ## Flashing path — any SSD to `RED 512GB V5` (medium difficulty)
 
@@ -44,30 +47,55 @@ For any other cheap SSD:
 
 1. Identify the controller (Silicon Motion, Phison, etc.).
 2. Get the matching mass-production tool (MPTool). Archives live at usbdev.ru and
-   upantool.com. The tool is controller-specific and often undocumented in
+   upantool.com. The tool is controller-specific. It is often undocumented in
    English.
 3. Set the ATA IDENTIFY model string to `RED 512GB V5`. The MPTool erases the
-   NAND, so run it once on an empty drive.
+   NAND. So run it once on an empty drive.
 4. Write the page-0x90 signature.
 
-`RED 512GB V5` is type 1 (no serial in the hash), and with a zero-WWN drive the
+`RED 512GB V5` is type 1 (no serial in the hash). With a zero-WWN drive the
 17-byte signature is the copyable constant given in
 [authentication.md](authentication.md). The hard part is finding the correct
-MPTool for the controller, not the cryptography.
+MPTool for the controller. The cryptography is not the hard part.
 
 ## Recommendation
 
-Use a **Samsung PM851 1 TB mSATA**: no flashing, 1 TB, and the whole task reduces
-to the adapter board plus writing one signature. If a PM851 is unavailable, a
-**Kingston KC600 flashed to `RED 512GB V5`** is the next best.
+Use a **Samsung PM851 1 TB mSATA**. There is no flashing, it is 1 TB, and the
+whole task reduces to the adapter board plus writing one signature. If a PM851 is
+unavailable, a **Kingston KC600 flashed to `RED 512GB V5`** is the next best.
 
 ## Field confirmation
 
-This matches what the community and approved vendors have reported independently:
+This matches what the community and approved vendors have reported
+independently:
 
 - Reduser analysis of JinniTech's method: the camera reads only the **SSD model
-  number** and the **SMART log** for verification — exactly the two gates here.
+  number** and the **SMART log** for verification. This is exactly the two gates
+  here.
 - Approved third-party mags (Cinelux Nexa-Mag, KipperTie Longtake 2 TB) pass this
   same lock with stock SSDs.
 - RED's own statement that the custom part "is not on the drives, but in the
   camera" matches the finding: the drive is a stock SSD; the camera validates.
+
+## Controller and MPTool notes
+
+The camera checks only the model string and the SMART page-0x90 signature (and
+the optional page 0x91). It does not check the SSD controller. It does not check
+the controller's internal settings. But the controller setup still matters for
+two practical reasons.
+
+First, you set the model string and the WWN through the controller's production
+tool (MPTool). So "how the SSD is set up in the MPTool" is how you satisfy the
+model gate. It is also how you feed the signature hash.
+
+Second, not every controller lets a host write the vendor SMART log page 0x90.
+If the controller or its MPTool config does not expose that log, you cannot place
+the signature.
+
+Genuine mags also differ from each other. The signature is WWN-bound. So a
+different drive has a different hash. Different capacities require different
+signature types.
+
+None of this is an extra camera check. It is the tooling needed to meet the two
+gates. If a copied signature fails on a drive, check that the drive's WWN is not
+non-zero.

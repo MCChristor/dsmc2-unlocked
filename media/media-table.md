@@ -1,15 +1,18 @@
 # The Firmware Media Table
 
-The camera carries a table of approved recording media. After the model-string
-whitelist match, the camera looks the drive up here to get its parameters
-(capacity, data-rate class) and the **required signature type**. Access is gated
-only by the model string plus the signature — the controller, NAND and physical
-capacity are not checked for access, only used for record-time math.
+Written in simplified technical English.
+
+The camera carries a table of approved recording media. The camera matches the
+model-string whitelist first. The camera then looks the drive up in this table.
+This gives the drive's parameters (capacity, data-rate class) and the **required
+signature type**. Access is gated only by the model string plus the signature.
+The camera does not check the controller, the NAND, or the physical capacity for
+access. It uses them only for record-time math.
 
 ## Official RED models
 
-Each RED SKU is manufactured by one of several OEM SSD makers. The **model
-string** is what the camera matches; the OEM is who actually builds the drive.
+Each RED SKU is manufactured by one of several OEM SSD makers. The camera
+matches the **model string**. The OEM is who actually builds the drive.
 
 | Model string | OEM(s) | Signature type |
 |---|---|---|
@@ -26,14 +29,14 @@ string** is what the camera matches; the OEM is who actually builds the drive.
 | `PV DXLM1TB V1` / `V2` / `V3` | Centon / Delkin / Virtium | 2 |
 
 There are 19 distinct official RED model strings (120/240/480/512/960 GB across
-versions), plus the OEM part-number strings above. Older firmware also knows a
-wider set of OEM drives (Toshiba, Viking, Memoright, Transcend and others) by
-their raw part numbers.
+versions). The OEM part-number strings above are additional. Older firmware also
+knows a wider set of OEM drives (Toshiba, Viking, Memoright, Transcend and
+others) by their raw part numbers.
 
 ## Capacities
 
 The table stores each drive's real usable geometry (capacity in 512-byte
-sectors), and the values are exact standard SSD sizes:
+sectors). The values are exact standard SSD sizes:
 
 | Model group | Usable capacity |
 |---|---|
@@ -42,7 +45,7 @@ sectors), and the values are exact standard SSD sizes:
 | 480 GB V1/V2/V3 | 480,103,981,056 B (480 GB) |
 | 960 GB V2/V3 | 960,197,124,096 B (960 GB) |
 
-Note the marketing vs usable quirk: the **"512GB" MINI-MAG is a 480 GB drive**.
+Note the marketing vs usable quirk. The **"512GB" MINI-MAG is a 480 GB drive**.
 Media-table entry `RED 512GB V5` is a 480 GB Delkin unit.
 
 ## The two best clone targets
@@ -51,13 +54,14 @@ Media-table entry `RED 512GB V5` is a 480 GB Delkin unit.
   zero-WWN drive the signature is a copyable constant (see
   [authentication.md](authentication.md)).
 - **`SAMSUNG MZMTE1T0HMJH-00000`** — a real Samsung PM851 mSATA 1 TB reports this
-  string natively, so no model-string flashing is needed at all.
+  string natively. So no model-string flashing is needed at all.
 
 ## Confirmed real-world device titles
 
-From a public RED MINI-MAG teardown (YouTube comment by `@我是02老公`), these are
-the **actual ATA device titles** genuine mags report — useful because the device
-title is exactly what the camera's model-string gate matches:
+The list below comes from a public RED MINI-MAG teardown (YouTube comment by
+`@我是02老公`). These are the **actual ATA device titles** that genuine mags
+report. They are useful because the device title is exactly what the camera's
+model-string gate matches:
 
 | RED label | Reported device title | Underlying drive |
 |---|---|---|
@@ -68,11 +72,11 @@ title is exactly what the camera's model-string gate matches:
 | 960 GB V3 | `RED 960GB V3` | — |
 | 2 TB (approved) | `KipperTie Longtake 2TB V1` | KipperTie M.2-SATA |
 
-Two things worth noting:
+Two things are worth noting:
 
-- Some SKUs report a **raw OEM part number** as the title (the Kingston and Micron
-  ones), while others report a **RED-branded** title (`RED 1TB V1`,
-  `RED 960GB V3`). Either form is just a string the camera matches exactly.
-- The **KipperTie 2 TB** reports its **own** title, `KipperTie Longtake 2TB V1`,
-  and the camera still accepts it — so the approved-partner titles are part of
-  the whitelist too, not only RED's own.
+- Some SKUs report a **raw OEM part number** as the title (the Kingston and
+  Micron ones). Others report a **RED-branded** title (`RED 1TB V1`,
+  `RED 960GB V3`). Either form is just a string. The camera matches it exactly.
+- The **KipperTie 2 TB** reports its **own** title, `KipperTie Longtake 2TB V1`.
+  The camera still accepts it. So the approved-partner titles are part of the
+  whitelist too, not only RED's own.

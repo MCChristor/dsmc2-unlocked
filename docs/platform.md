@@ -1,56 +1,59 @@
 # The DSMC2 Platform
 
-A hardware and software overview of the RED DSMC2 camera, as reverse-engineered
-from a SCARLET-W 5K running firmware 7.4.1.
+This document gives a hardware and software overview of the RED DSMC2 camera. The
+facts come from a SCARLET-W 5K on firmware 7.4.1.
+
+Written in simplified technical English.
 
 ## Main processor and OS
 
-- **Application processor:** TI OMAP-class ARM Cortex-A8, 32-bit, single flat
-  address space, **no MMU**. Main DDR window is at `0x80000000`.
-- **Operating system:** ThreadX (Express Logic, G5.5.5.x), the real-time OS now
-  open-source. Compiled with Green Hills.
-- **Consequence of flat/no-MMU:** there is no process isolation. Any code that
-  runs can read and write the whole address space.
+- **Application processor:** a TI OMAP-class ARM Cortex-A8. It is 32-bit. It uses
+  one flat address space with **no memory protection (no MMU)**.
+- **Operating system:** ThreadX (Express Logic). This real-time OS is now open
+  source. The build uses the Green Hills compiler.
+- **Result of the flat memory:** there is no process isolation. Any code that runs
+  can read and write the whole memory.
 
 ## Coprocessors
 
-The DSMC2 is a multi-processor design. The main ARM orchestrates several
-dedicated cores, each with its own firmware image loaded at boot:
+The DSMC2 uses several processors. The main ARM controls a set of dedicated cores.
+Each core loads its own firmware image at boot.
 
 | Subsystem | Core | Role |
 |---|---|---|
-| ISP | Tensilica | Sensor image processing (the R3D wavelet path is hardware) |
-| IOB0 | Tensilica | SATA / HBA / HDMI I/O |
-| IOB1 | Tensilica | Sensor dark-level and bad-pixel calibration |
+| ISP | Tensilica | Processes the sensor image (the R3D wavelet path is hardware) |
+| IOB0 | Tensilica | Handles SATA, HBA, and HDMI I/O |
+| IOB1 | Tensilica | Does sensor dark-level and bad-pixel calibration |
 | LSB FPGA | Xilinx Kintex-7 | Programmable logic |
 | SATA3 FPGA | FPGA | Bridges the media bus (see the media folder) |
 | DSP | TI TMS320C6x | Brain-module signal processing |
 | WiFi/BT | RSI RS9113 (Redpine) | Wireless |
 
-Accessories (lens mounts, rear I/O modules, battery module, FlatUI, EVF) each
-carry their own small MCU firmware, mostly ARM-Thumb (STM32-class).
+Accessories carry their own small MCU firmware. These include the lens mounts, the
+rear I/O modules, the battery module, the FlatUI, and the EVF. Most are ARM-Thumb
+(STM32-class).
 
 ## Software components
 
-Standard building blocks, identified in the firmware:
+The firmware uses standard, known parts:
 
-- **SQLite3** — the camera settings database (referred to as the CDB).
+- **SQLite3** — the camera settings database (the CDB).
 - **zlib** — on-NAND compression.
 - **YAFFS2** — the flash filesystem.
 - **LibTomCrypt** — software crypto.
-- **TinyXML** — manifests.
-- **ProRes + DNxHD** — proxy/output codecs (R3D itself is the hardware wavelet).
+- **TinyXML** — the manifests.
+- **ProRes and DNxHD** — the proxy and output codecs. The R3D wavelet is hardware.
 
 ## Storage layout
 
-Internal NAND is partitioned into: environment, two OS images (`image1` /
-`image2`, one active), a data partition, a log partition, a large read-only
-data partition, and a large persistent-data partition. Calibration and
-force-update areas live on the persistent-data partition.
+The internal NAND has several partitions. These are the environment, two OS images
+(`image1` and `image2`, one active at a time), a data partition, a log partition, a
+large read-only data partition, and a large persistent-data partition. The
+calibration and force-update areas sit on the persistent-data partition.
 
 ## Access
 
-- **Network:** the camera exposes file transfer over WiFi, which is how bulk
-  data is pulled off it.
-- **RCP:** the RED Command Protocol (documented by RED's own SDK) is the
-  sanctioned way to control and automate the camera over Ethernet.
+- **Network:** the camera gives file transfer over WiFi. This is how bulk data
+  comes off the camera.
+- **RCP:** the RED Command Protocol is documented in RED's own SDK. It is the
+  approved way to control and automate the camera over Ethernet.
