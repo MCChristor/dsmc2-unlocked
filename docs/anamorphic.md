@@ -1,0 +1,73 @@
+# Anamorphic De-Squeeze Ratios
+
+> **Status: researched and offline-testable, not yet applied on a camera.** The
+> mechanism below is read from the firmware and the patch set is designed and
+> self-checked, but it has **not** been run on a live body. Every patch here can be
+> applied to RAM over the shell (`write reg`), where it is lost on power cycle, so
+> it is testable without any permanent change — but treat the specific gains as
+> unverified until someone confirms them on hardware.
+
+This page explains how the DSMC2 selects anamorphic de-squeeze ratios and what it
+would take to add ratios the menu does not offer.
+
+## How the format is encoded
+
+A capture format is one 32-bit value (mirrored from the `FORMAT` setting):
+
+```
+bits  0–3   resolution code
+bits  4–11  aspect-ratio code
+bits 12–15  anamorphic code
+bit  16     look-around
+```
+
+The anamorphic code comes from the RCP SDK enum:
+
+| code | de-squeeze | stock availability |
+|---:|---:|---|
+| 0 | 1.0 (off) | all |
+| 1 | 2.0 | all |
+| 2 | 1.333 | all |
+| 3 | 1.25 | 8K-class sensors only |
+| 4 | 1.6 | **defined but not in any menu, no name, no factor** |
+| 5 | 1.8 | 8K-class sensors only |
+| 6 | 1.5 | **not implemented at all** |
+
+## The key finding: it is sensor-gated, not licence-gated
+
+Which ratios appear in the menu is decided by the **sensor type**, not the model
+name and not a licence. The list generator enables the extra ratios only for the
+8K-class sensors (Helium/Monstro family). On a 5K/Dragon sensor the generator
+returns "none of the extra ratios", so 1.25/1.8 never appear, and 1.6/1.5 have no
+menu entry on any sensor.
+
+This matters because it means the gate is a **software check on the sensor value**,
+not a hardware limit of the de-squeeze itself — de-squeeze is a display-time image
+scale, which any sensor can do. So the ratios are a realistic software-unlock
+target, where a sensor-resolution change (covered in [models.md](models.md)) is
+not.
+
+## What a patch would do
+
+Three independent changes, in increasing scope:
+
+1. **Unlock the capability bit** — one word, makes the anamorphic capability read
+   as always available. On its own this exposes the codes the current sensor's
+   generator already knows.
+2. **Add a missing ratio (e.g. 1.5×)** — a few words plus a small code cave to add
+   the list entry, its name, and its de-squeeze factor, since code 6 has none of
+   those in the firmware. The unlock word has to be included, or the format-setter
+   strips the anamorphic bits back off.
+3. Both together.
+
+Because there is no MMU and the bootloader does not verify the running image
+([platform.md](platform.md)), such a patch can be applied live with `write reg`
+for testing and only made permanent by writing it into the boot slot.
+
+## Honest limits
+
+- **Not verified on a camera.** The addresses and the format logic are read from
+  7.4.1; the gains are not confirmed on hardware.
+- A ratio is a **display de-squeeze**, not a new sensor mode. It changes how the
+  image is un-stretched for monitoring/output, nothing about capture.
+- This is specific to one firmware build; addresses would differ on another.

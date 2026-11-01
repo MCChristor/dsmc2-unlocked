@@ -39,6 +39,9 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [docs/log-decode.md](docs/log-decode.md) | Decoding the camera's obfuscated log |
 | [docs/shell-commands.md](docs/shell-commands.md) | Debug-shell command reference |
 | [docs/feature-unlock.md](docs/feature-unlock.md) | Features, capabilities, and model identity |
+| [docs/extraction.md](docs/extraction.md) | Pulling the filesystem and firmware image off the camera |
+| [docs/peripheral-firmware.md](docs/peripheral-firmware.md) | Coprocessor and accessory firmware images |
+| [docs/anamorphic.md](docs/anamorphic.md) | Anamorphic de-squeeze ratios (researched) |
 | [docs/research-notes.md](docs/research-notes.md) | Difficulties, insights, and the research story |
 | [media/](media/) | MINI-MAG and compatible SSDs |
 

@@ -9,6 +9,9 @@
 - [log-decode.md](log-decode.md) — decoding the camera's obfuscated log
 - [shell-commands.md](shell-commands.md) — debug-shell command reference
 - [feature-unlock.md](feature-unlock.md) — features, capabilities, and model identity
+- [extraction.md](extraction.md) — pulling the filesystem and firmware image off the camera
+- [peripheral-firmware.md](peripheral-firmware.md) — coprocessor and accessory firmware images
+- [anamorphic.md](anamorphic.md) — anamorphic de-squeeze ratios (researched, not camera-verified)
 - [research-notes.md](research-notes.md) — difficulties, insights, and the research story
 
 Tools and hardware live in [../tools/](../tools) and [../hardware/](../hardware).
