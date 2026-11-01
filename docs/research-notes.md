@@ -36,21 +36,25 @@ project then moved faster.
 file" tool is also a "read this location and give it to me" tool. Look at a
 feature for the basic action it gives you, not for the name on the button.
 
-## Problem 2 — the firmware had a hidden second layer
+## Problem 2 — a "second encryption layer" that did not exist
 
-An early analysis said the firmware packaging was "fully solved." That was wrong.
-A careful re-check found the mistake: the first pass read a header field as if it
-were plain text, but the data under it was still encrypted. The output was still
-almost fully random. Random output is the sign that the data is not decrypted.
+For a while we believed the firmware had a **second, unbroken encryption layer**.
+A multi-model package seemed to hold sealed, random data under the part we could
+open. We looked for an inner key for days.
 
-The real design has **two separate encryption layers**. One is fully understood.
-The other uses a different cipher and is not broken. Some files are readable
-because the camera does both steps itself when it loads them. The same files on
-disk stay locked. See [firmware.md](firmware.md) for the mechanism.
+There was no inner layer. The "sealed" data was already plain. Our own tool had run
+its decryption step **over data that was not encrypted**, and that turned readable
+bytes back into noise. The noise then looked like a cipher we had not broken. We
+were the ones who encrypted it.
 
-**Lesson.** Randomness is the honesty check. If your "decrypted" output is still
-fully random, you did not decrypt it. You only renamed it. Measure the randomness
-before you call anything solved.
+Once we stopped double-processing the data, a multi-model package opened fully. The
+firmware we unpacked offline is **byte-for-byte the same** as the image on the
+camera. See [firmware.md](firmware.md) for the real structure.
+
+**Lesson.** Randomness cuts both ways. Random output can mean "still encrypted," but
+it can also mean "you just encrypted plain data by mistake." Before you hunt a
+missing key, check that your own pipeline did not create the very ciphertext you are
+chasing.
 
 ## Insight 2 — keep the wrong turns in the record
 
