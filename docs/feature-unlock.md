@@ -79,6 +79,38 @@ set them persistently.
 > matter, because the bootloader does not verify the installed image at all
 > ([platform.md](platform.md), [keys.md](keys.md)).
 
+## The licence system
+
+Some capabilities are loaded from **licence files** (`.key` files on the camera),
+not just the settings database. This is the mechanism RED uses to enable paid
+feature options per body.
+
+A licence file is **not** plain text. It goes through the firmware's generic key
+container: an RSA-encrypted, signature-checked blob that decrypts and decompresses
+to a small SQLite database with a `hw_caps` table — the capabilities that file
+grants. The chain is SHA-1 + RSA signature verify, then RSA-unwrap a key, then RC4
+decrypt, then zlib inflate.
+
+Two things follow from what is in the firmware image:
+
+- **The camera holds private keys.** Several RSA private keys are embedded in the
+  image (the generic key/asset keys, separate from the two firmware-package keys in
+  [keys.md](keys.md)). Because a private key gives its public half, the material to
+  *produce* a container the camera will open and trust is on the device.
+- **So the licence format is forgeable in principle** — the gate is not a secret
+  RED holds alone. What is not yet pinned down is which of the embedded keys a
+  licence uses and the exact field layout, so this is **not a turnkey result**.
+
+> **Status: researched, not completed or camera-verified.** The container format
+> and primitive chain are read from the firmware; a working forged licence has not
+> been produced or tested. Treat this as "the gate is understood and looks
+> forgeable", not "here is a licence generator".
+
+For most feature flags you do not need a licence at all — the CDB/preset and
+`debug hw_cap` routes above set capabilities directly, which is simpler than
+minting a licence. The licence path matters only for capabilities that are loaded
+*only* from a licence file.
+
 ## What is proven and what is not
 
 - **Proven:** model identity is config; the app binary and bootloader are
