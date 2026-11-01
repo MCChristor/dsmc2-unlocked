@@ -1,0 +1,14 @@
+# Never commit key material, dumps, or firmware images to this public repo
+*.der
+*.pem
+*.key
+*.bin
+*.mem
+*.rmf
+*.z
+*_privkey*
+*key*.txt
+fw_dump/
+fw_crypto/
+fs_mirror/
+dumps/
