@@ -68,9 +68,9 @@ model-string gate matches:
 | 120 GB V3 | `KINGSTON RBU-SMS100S3120GD1` | Kingston |
 | 240 GB V1 | `M500IT_MTFDDAT240MBD` | Micron M500IT |
 | 480 GB V3 | `Micron_M500_MTFDDAT480MAV` | Micron M500 |
-| 960 GB V1 / "1 TB" | `RED 1TB V1` | Virtium StorFly 300CE |
-| 960 GB V3 | `RED 960GB V3` | — |
-| 2 TB (approved) | `KipperTie Longtake 2TB V1` | KipperTie M.2-SATA |
+| 960 GB V3 | `RED 960GB V3` | Virtium StorFly 300CE |
+| 1 TB V1 | `SAMSUNG MZMTE1T0HMJH00000` | Samsung TLC Msata |
+| 2 TB (approved) | `Samsung SSD 860 EVO M.2 2TB` | Samsung SSD 860 EVO M.2 2TB |
 
 Two things are worth noting:
 
