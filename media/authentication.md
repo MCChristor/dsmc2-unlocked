@@ -161,3 +161,31 @@ print(red_type1_signature("RED 512GB V5").hex())
 Write those 17 bytes to the drive's SMART GPL log page 0x90. Use the SSD vendor's
 tool. Or use any host utility that permits a GPL log write. No camera-side step
 is required.
+
+## Easiest: let the camera write page 0x90
+
+You usually do not need to compute or write the signature at all. The camera's own
+service shell will do it:
+
+```
+test sata <side|rear> signature_write
+```
+
+This runs the firmware's own signature routine on the currently inserted drive,
+computing the MD5 from that drive's WWN and model and writing the result to page
+0x90. `signature_read` dumps page 0x90; `signature_erase` clears it.
+(`pv_signature_write` is the type-2 variant.)
+
+The one condition: the camera only signs a drive that **already passes the model
+whitelist** — it signs whatever model string the drive reports, but the drive must
+report an approved one. So the practical no-host-tool path is:
+
+1. Make the SSD report an approved model string (see below).
+2. Insert it.
+3. Run `signature_write`. The camera writes a valid 0x90 for that exact drive.
+
+Because the camera computes the MD5 from the drive's own WWN, this always produces
+a correct per-drive signature — you do not have to match WWNs by hand.
+
+See the debug shell notes in [docs/serial-shell.md](../docs/serial-shell.md) for
+how to reach the service shell.
