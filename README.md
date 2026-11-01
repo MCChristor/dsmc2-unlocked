@@ -64,6 +64,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [media/authentication.md](media/authentication.md) | The two-gate lock and the signature algorithm |
 | [media/media-table.md](media/media-table.md) | Every approved model string and its OEM |
 | [media/compatible-ssds.md](media/compatible-ssds.md) | What to buy in 2026, the easy path, the flashing path |
+| [media/mag-firmware.md](media/mag-firmware.md) | The MINI-MAG controller `.rmf` firmware format |
 | [media/hardware.md](media/hardware.md) | The connector/adapter board |
 
 ## Scope
