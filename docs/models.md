@@ -1,4 +1,5 @@
 # DSMC2 Model Family
+
 ## The bodies
 
 DSMC2 is RED's second-generation DSMC modular body. "DSMC" means Digital Still and
@@ -16,6 +17,23 @@ retail bodies are:
 
 The reference body for this research is a **SCARLET-W 5K**. Its sensor is
 5120×2700.
+
+### Camera-type tags
+
+Inside a combo firmware package each model is a slice with a camera-type tag. The
+same value appears at runtime as `CAMERA_TYPE` in `/env`. The tags seen in the
+7.4.1 combo:
+
+| tag | factory type | camera ID |
+|---|---|---|
+| `0x11` | WEAPON | WEAPON |
+| `0x14` | WEAPON | WEAPON (second sensor variant; same `factory.db` as `0x11`) |
+| `0x15` | WEAPON | RAVEN |
+| `0x16` | SCARLET_WEAPON | SCARLETW |
+| `0x17` | EPIC-W | EPIC-W |
+
+How this value drives identity and what it does *not* change (capability, sensor)
+is covered in [feature-unlock.md](feature-unlock.md).
 
 ## How the camera knows which model it is
 
@@ -62,3 +80,22 @@ partition of the camera, not in the update package.
 
 So the model differences in the package are small and readable. They are database
 rows and text config, not code.
+
+## Firmware timeline (SCARLET-W line)
+
+Release notes from RED's SCARLET-W download page, for the builds in this research.
+Function counts (from disassembling each build's application image) track the
+changelog — the big feature jump at 7.1.0.1 is a large code jump too.
+
+| Build | Date | Highlights |
+|---|---|---|
+| 6.3.106 | 2017-12-21 | Standard-OLPF blue-tint fix; 7.5K/MONSTRO display |
+| 7.0.2 | — | no release notes published |
+| 7.0.3 | 2018-05-21 | DSMC2 BRAIN support; WEAPON→DSMC2 rename in Camera Info |
+| 7.0.4 | 2018-08-09 | fixes only: GEMINI green lines, lens-attach freeze, SIGMA 2.0.1, proxy buffer overflow |
+| 7.1.0.1 | 2018-11-27 | **largest jump:** MONSTRO flip/mirror, focus peaking, CDL/RMD/LUT import, 5K 4:3, HLG, DNxHD/HR on RAVEN, 30 fps base, more lenses; IPP2 becomes the default pipeline |
+| 7.4.1 | 2020-10-19 | 1.8× anamorphic for MONSTRO 8K VV; Zeiss/Fujinon shading; media-mount fix; Output Tone Map default → Medium Contrast; IPP2 LUT output transforms |
+
+The jump from 7.1.0.1 to 7.4.1 added LUTs, overlays, and rear-device firmware and
+changed the application image, the factory database, default presets, and several
+FPGA/ASIC binaries. Across all these builds the **bootloader is byte-identical**.

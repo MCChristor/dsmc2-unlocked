@@ -2,6 +2,7 @@
 
 This document gives a hardware and software overview of the RED DSMC2 camera. The
 facts come from a SCARLET-W 5K on firmware 7.4.1.
+
 ## Main processor and OS
 
 - **Application processor:** a TI OMAP-class ARM Cortex-A8. It is 32-bit. It uses
@@ -10,6 +11,28 @@ facts come from a SCARLET-W 5K on firmware 7.4.1.
   source. The build uses the Green Hills compiler.
 - **Result of the flat memory:** there is no process isolation. Any code that runs
   can read and write the whole memory.
+- **Memory map.** Code and data run from DDR starting at `0x80000000`. The
+  application image is `dsmc_program.mem` (about 21.6 MB). To turn a virtual
+  address into an offset inside that file, subtract the base:
+  `file_offset = VA − 0x80000000`. The debug shell can read this memory live, and
+  the range `0x80000000–0x81FFFFFF` is safe to read; reading unmapped or
+  peripheral addresses faults the processor (see [serial-shell.md](serial-shell.md)).
+
+## No secure boot
+
+Two architecture facts matter for anyone modifying the camera, and both are
+verified:
+
+- **The bootloader does not verify the installed OS image.** It opens
+  `/imageN/dsmc_program.mem`, reads it, and jumps to it — no signature, no hash,
+  no CRC, no decryption on that path. A patched image written into the active boot
+  slot runs.
+- **No memory protection.** With a flat no-MMU address space, any code that runs
+  is fully privileged and can read or write anything, including other cores' state.
+
+Together these mean modified firmware does not need RED's signature to run on an
+owned body. RED's signing key is used only to gate the packaged *upgrade* flow,
+and the camera holds no signing private key. See [keys.md](keys.md).
 
 ## Coprocessors
 
@@ -43,14 +66,34 @@ The firmware uses standard, known parts:
 
 ## Storage layout
 
-The internal NAND has several partitions. These are the environment, two OS images
-(`image1` and `image2`, one active at a time), a data partition, a log partition, a
-large read-only data partition, and a large persistent-data partition. The
-calibration and force-update areas sit on the persistent-data partition.
+The internal NAND is a YAFFS2 flash filesystem split into partitions. The names
+below are what `nand ls` shows on the device:
+
+| Path | Role |
+|---|---|
+| `/env` | module/board identity: part and serial numbers, camera type |
+| `/image1`, `/image2` | the two OS image slots; one is active at a time |
+| `/data` | user settings database and caches |
+| `/log` | boot logs, run-time hours, boot count |
+| `/pdata` | persistent data: calibration and the `force_upgrade` area |
+| `/rodata` | large read-only data (per-model manifests, feature tables) |
+
+User-facing folders also live on the filesystem: `/presets`, `/looks`, `/luts`,
+`/media`, and `/force_preset` (where a preset is staged and consumed at boot).
 
 ## Access
 
-- **Network:** the camera gives file transfer over WiFi. This is how bulk data
-  comes off the camera.
-- **RCP:** the RED Command Protocol is documented in RED's own SDK. It is the
-  approved way to control and automate the camera over Ethernet.
+There are three ways to reach the camera:
+
+- **WiFi — RCP control.** The RED Command Protocol runs over TCP port 1111 (with a
+  UDP discovery listener on 1112). RCP is documented in RED's own SDK and is the
+  approved way to control and automate the camera. The same protocol also runs on
+  the **CTRL** serial port (see the [serial bridge](../hardware/serial-bridge)).
+- **WiFi — file transfer (RFTP).** RED's file transfer pulls user files
+  (`/presets`, `/looks`, `/luts`, `/log`, `/media`, thumbnails) off the camera.
+  This is the practical way to get bulk data off, including a firmware image that
+  the shell has decompressed with `nand zlib`.
+- **Serial — debug shell.** A low-level interactive shell on the CTRL port, gated
+  behind a preset flag. It gives live memory read/write, NAND access, the settings
+  database, and hardware tests. See [serial-shell.md](serial-shell.md). It is the
+  only interface that reaches the diagnostics needed to repair a dead body.

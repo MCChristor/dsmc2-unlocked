@@ -1,8 +1,10 @@
 # What Is Possible
 
-This page states what the reverse-engineering enables. It gives the outcomes, not
-the methods. It does not publish the methods, the internal keys, or the access
-steps.
+This page states what the reverse-engineering enables — the outcomes. The methods,
+keys, and tools behind them are in [docs/keys.md](keys.md),
+[docs/serial-shell.md](serial-shell.md), [docs/log-decode.md](log-decode.md), the
+[tools/](../tools) folder, and the [media](../media/) folder.
+
 ## Confirmed
 
 - **The firmware is understood.** The packaging and the per-model structure are
@@ -14,7 +16,7 @@ steps.
 - **Media authentication is solved.** The check that decides which drive the camera
   accepts is reverse-engineered. It is reproduced offline against a genuine
   magazine. So **any compatible SATA SSD can work as a mag**. The full detail is in
-  the [media](../media/) folder. This is the one area documented end to end.
+  the [media](../media/) folder.
 
 ## Bounded by hardware
 
@@ -40,8 +42,12 @@ A **custom firmware** build is in progress. The planned additions are:
 These will be **announced later**. This repository will be updated when the build
 ships.
 
-## Out of scope here
+## Where the details are
 
-This page does not publish the internal keys, the exact methods, the access steps,
-or ready-to-run exploit code. The media folder is the exception. That path is
-documented in full because the media is discontinued and unsupported.
+Everything above is backed by published material in this repository: the keys and
+what they open ([keys.md](keys.md)), the debug-shell access path
+([serial-shell.md](serial-shell.md)), the package format and decryptor
+([firmware.md](firmware.md), [tools/fw-crypto](../tools/fw-crypto)), the log
+decoder ([log-decode.md](log-decode.md)), the serial bridge
+([hardware/serial-bridge](../hardware/serial-bridge)), and the full media path
+([media](../media/)).

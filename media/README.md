@@ -2,9 +2,9 @@
 
 The DSMC2 records to a **RED MINI-MAG**. A MINI-MAG is a SATA SSD inside a
 RED-branded caddy. The camera authenticates the drive. After that, the camera
-records at full speed. RED has discontinued these mags. RED no longer sells or
-services them. Owners who want to keep shooting need another media path. This
-folder documents that path in full.
+records at full speed. RED has discontinued these mags and no longer supplies
+repair parts for them. Owners who want to keep shooting need another media path.
+This folder documents that path in full.
 
 > RED MINI-MAG 1TB, 512GB and 240GB appear on RED's official [Discontinued
 > Products](https://support.reddigitalcinema.com/hc/en-us/articles/1500000253342-Discontinued-Products)
