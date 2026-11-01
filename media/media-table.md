@@ -28,10 +28,10 @@ matches the **model string**. The OEM is who actually builds the drive.
 | `SAMSUNG MZMTE1T0HMJH-00000` | Samsung (PM851 mSATA 1 TB) | 1 (type 2 = PV DXL) |
 | `PV DXLM1TB V1` / `V2` / `V3` | Centon / Delkin / Virtium | 2 |
 
-There are 19 distinct official RED model strings (120/240/480/512/960 GB across
-versions). The OEM part-number strings above are additional. Older firmware also
-knows a wider set of OEM drives (Toshiba, Viking, Memoright, Transcend and
-others) by their raw part numbers.
+The firmware table has 26 entries and 23 distinct model strings: 14 RED-branded
+strings, 3 PV DXL strings and 6 OEM part numbers. Two strings appear twice, once
+for each signature type. Older firmware also knows a wider set of OEM drives
+(Toshiba, Viking, Memoright, Transcend and others) by their raw part numbers.
 
 ## Capacities
 

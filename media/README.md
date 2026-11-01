@@ -16,15 +16,15 @@ folder documents that path in full.
 
 - **The bus is SATA-only** (SATA III, through an on-board SATA3 FPGA). NVMe and
   CFexpress/CF/SD do **not** work. Do not buy them.
-- A MINI-MAG is a stock **mSATA** SSD in a caddy. It uses the Silicon Motion
-  SM2246EN controller. Nothing is exotic.
-- The camera accepts a drive from **two things only**. The first is the drive's
-  reported **model string**. The second is an **MD5 signature** stored in a
-  SMART log page. You can reproduce both offline. There is no RSA, no server,
-  and no secret that you cannot derive. See
-  [authentication.md](authentication.md).
-- So **any SATA SSD can be a mag**. The drive must report an approved model
-  string. The drive must also carry the correct signature. The controller, the
+- A MINI-MAG is a stock **mSATA** SSD in a caddy. At least the 960 GB V3 unit
+  uses the Silicon Motion SM2246EN controller. Nothing is exotic.
+- The camera sets the media class from **two things only**: the drive's reported
+  **model string** and an **MD5 signature** stored in a SMART log page. You can
+  reproduce both offline. There is no RSA, no server, and no secret that you
+  cannot derive. See [authentication.md](authentication.md).
+- So **any SATA SSD can be a mag at full speed**. The drive must report an
+  approved model string. The drive must also carry the correct signature. An
+  unapproved model still mounts, but at the low data rate. The controller, the
   NAND, and the capacity do not gate access. They only affect speed and record
   time.
 

@@ -29,8 +29,8 @@ This part matters for crossgrades:
   at one slice per model. The program image is shared.
 - The model identity is **data, not code**. It is a few rows in the factory
   settings database plus one camera-type value.
-- A combo packages one slice per model. But each slice is the same program with
-  different manifests and resource files.
+- A combo packages one slice per model. Each slice holds the same program. Only
+  the small per-model data files differ.
 
 ## What this means, and what it does not
 
@@ -55,8 +55,13 @@ format options on hardware that already supports them. It does not mean a jump t
 different sensor class. The exact per-model capability differences were **not**
 fully mapped from the device. So treat crossgrade feature gains as unverified.
 
-## Manifests
+## Per-model data files
 
-Resource manifests drive per-model behaviour. Each firmware slice bundles them.
-They hold lens tables, format tables, and feature gates. They are plain-text XML in
-the firmware filesystem. This is why the model differences are readable.
+Per-model behaviour comes from a small set of data files. In the 7.4.1 package,
+the model slices are byte-identical except for eleven files: two rows in the
+factory database, eight default presets, and one camera config file. The package
+contains **no XML files**. Any XML or manifest data lives on the read-only data
+partition of the camera, not in the update package.
+
+So the model differences in the package are small and readable. They are database
+rows and text config, not code.
