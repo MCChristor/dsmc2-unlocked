@@ -18,3 +18,5 @@ dumps/
 # camera firmware, not signing keys. See docs/keys.md.
 !tools/fw-crypto/fw_v2_privkey.der
 !tools/fw-crypto/fw_v3_privkey.der
+# The log XOR pad is a published obfuscation constant, not a secret. See docs/log-decode.md.
+!tools/red-log-decoder/log_xor_table.bin
