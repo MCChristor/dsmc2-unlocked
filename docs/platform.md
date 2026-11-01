@@ -41,13 +41,26 @@ Each core loads its own firmware image at boot.
 
 | Subsystem | Core | Role |
 |---|---|---|
-| ISP | Tensilica | Processes the sensor image (the R3D wavelet path is hardware) |
-| IOB0 | Tensilica | Handles SATA, HBA, and HDMI I/O |
-| IOB1 | Tensilica | Does sensor dark-level and bad-pixel calibration |
+| ISP (×2) | Tensilica Xtensa | Processes the sensor image (the R3D wavelet path is hardware) |
+| IOB0 | Tensilica Xtensa | Handles SATA, HBA, and HDMI I/O |
+| IOB1 | Tensilica Xtensa | Does sensor dark-level and bad-pixel calibration |
+| proio IOB0 | Tensilica Xtensa | Pro I/O build (data section is a zero-filled stub) |
 | LSB FPGA | Xilinx Kintex-7 | Programmable logic |
 | SATA3 FPGA | FPGA | Bridges the media bus (see the media folder) |
 | DSP | TI TMS320C6x | Brain-module signal processing |
 | WiFi/BT | RSI RS9113 (Redpine) | Wireless |
+
+The ISP and IOB core identity is not a guess: `loadSystemConfigFile` declares the
+load paths `TENSILICA_ISP_BIN_PATH` and `TENSILICA_IOB0 / IOB1 / PROIO_IOB0_BIN_PATH`,
+plus the topology (`ISP_COUNT 2`, `IOB_COUNT 1`, `ISP_SYSTEM_SLICES 60`) — the
+firmware names the ISA itself. The DSMC1 (EPIC DRAGON) `isp/iram.bin` bootstrap is
+byte-identical to the DSMC2 SCARLET-W one, so both generations run the same
+programmable Xtensa cores — **not blank FPGAs, not fixed-function ASICs**. Each core
+loads its `iram`/`dram` from NAND at boot (`DEBUG_LOAD_ASIC_BINS_FROM_HOST` can push
+replacements). The limit: the Xtensa code itself has **not** been disassembled —
+only the cores' identity, load path, and their plaintext `dram` string tables are
+recovered; reversing the cores needs an Xtensa toolchain, not the ARM path used for
+`dsmc_program.mem`.
 
 Accessories carry their own small MCU firmware. These include the lens mounts, the
 rear I/O modules, the battery module, the FlatUI, and the EVF. Most are ARM-Thumb
