@@ -27,6 +27,7 @@ cheap-SSD path in detail.
 | [docs/platform.md](docs/platform.md) | What the DSMC2 is: SoC, OS, coprocessors, buses |
 | [docs/models.md](docs/models.md) | The DSMC2 model family and how models differ |
 | [docs/whats-possible.md](docs/whats-possible.md) | What the research enables (outcomes) |
+| [docs/firmware.md](docs/firmware.md) | Package formats (v2/v3) and how the encryption works |
 | [docs/research-notes.md](docs/research-notes.md) | Difficulties, insights, and the research story |
 | [media/](media/) | **MINI-MAG and compatible SSDs — fully documented** |
 
