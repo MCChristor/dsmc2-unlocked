@@ -119,14 +119,26 @@ A drive that reports a **non-zero** WWN hashes differently. The copied bytes wil
 not validate on it. For such a drive, do one of two things. Either zero its WWN.
 Or recompute the MD5 from that drive's own WWN with the formula above.
 
-## Page 0x91 is optional
+## Page 0x91 is read, but it is not a gate
 
 There is a second SMART page, **0x91**. It holds an RC4-encrypted "media
-characteristics" block. It is optional. If it is missing, the camera falls back
-to the built-in media table. This is exactly what the captured genuine mag did.
-You do not need to produce it. The RC4 key, if ever needed, is derived from the
-drive's own serial number, model string and capacity. It is not a hidden camera
-secret.
+characteristics" block (a TLV, not a signature).
+
+The firmware **does read it**: `SATA_ReadREDMediaCharacteristics` reads page 0x91,
+called from `InitializeMediaInfo` on every media insert. But reading it is not a
+mount decision. If the page is missing, unreadable, or all zeros, the camera logs
+*"does not contain Media Characteristics … Using Media Characteristics from the
+RED Media Table"* and **falls back to its built-in media table** — which is
+exactly what the captured genuine mag did (its 0x91 was all zeros). So 0x91 is a
+*refinement*, not a check you have to pass.
+
+The only thing that gates the mount is the pair above: the ATA model string
+(whitelist) and the page-**0x90** MD5 signature. Nothing in the firmware rejects a
+drive for a bad or absent 0x91.
+
+You do not need to produce 0x91. If you ever did, its RC4 key is **derived from
+the drive's own serial number, model string and capacity** — not a hidden camera
+secret, and different per drive.
 
 ## Reproducing it offline
 
