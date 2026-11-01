@@ -3,9 +3,12 @@
 The camera carries a table of approved recording media. The camera matches the
 model-string whitelist first. The camera then looks the drive up in this table.
 This gives the drive's parameters (capacity, data-rate class) and the **required
-signature type**. Access is gated only by the model string plus the signature.
-The camera does not check the controller, the NAND, or the physical capacity for
-access. It uses them only for record-time math.
+signature type**. The *mount* is gated only by the model string plus a readable
+page 0x90; the camera does not check the controller or the NAND. But **the
+physical capacity is checked** for the full-rate class: `AuthenticateREDMedia`
+compares the drive's reported sector count against the table entry's value, and a
+mismatch throttles the drive to ~30 MB/s (it still mounts). See
+[authentication.md](authentication.md).
 
 ## Official RED models
 
@@ -36,15 +39,23 @@ for each signature type. Older firmware also knows a wider set of OEM drives
 The table stores each drive's real usable geometry (capacity in 512-byte
 sectors). The values are exact standard SSD sizes:
 
-| Model group | Usable capacity |
-|---|---|
-| 120 GB V6/V7 | 120,034,123,776 B (120 GB) |
-| 240 GB V4/V5/V6 | 240,057,409,536 B (240 GB) |
-| 480 GB V1/V2/V3 | 480,103,981,056 B (480 GB) |
-| 960 GB V2/V3 | 960,197,124,096 B (960 GB) |
+The entry's sector count is **checked at insert** (not just record-time math), so
+the drive's reported geometry must equal it for full rate:
+
+| Model group | Sectors (`+0x24`) | Usable capacity |
+|---|---|---|
+| 120 GB V6/V7 | 234,441,648 | 120,034,123,776 B (120 GB) |
+| 240 GB V4/V5/V6 | 468,862,128 | 240,057,409,536 B (240 GB) |
+| 480 GB V1/V2/V3, `RED 512GB V5` | 937,703,088 | 480,103,981,056 B (480 GB) |
+| 960 GB V2/V3, `SAMSUNG MZMTE1T0HMJH-00000` | 1,875,385,008 | 960,197,124,096 B (960 GB) |
 
 Note the marketing vs usable quirk. The **"512GB" MINI-MAG is a 480 GB drive**.
 Media-table entry `RED 512GB V5` is a 480 GB Delkin unit.
+
+The `SAMSUNG MZMTE1T0HMJH-00000` row expects **960 GB** (1,875,385,008 sectors),
+not the PM851's native ~1 TB. So a stock PM851 1 TB passes the signature but fails
+the geometry check and throttles to 30 MB/s unless its reported capacity is capped
+to 960 GB (HPA).
 
 ## The two best clone targets
 

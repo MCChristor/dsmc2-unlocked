@@ -37,8 +37,15 @@ table. So:
    page-0x90 signature for that drive. (You can also do it offline with the formula
    in [authentication.md](authentication.md), but the camera is simpler.)
 
-There is no model-string flashing. The drive is 1 TB, larger than RED's biggest
-960 GB mag. The only real work is the connector board.
+There is no model-string flashing. The only real work is the connector board.
+
+One caveat for **full rate**: the camera checks the drive's reported sector count
+against the table row (`AuthenticateREDMedia`), and the
+`SAMSUNG MZMTE1T0HMJH-00000` row expects **960 GB** (1,875,385,008 sectors). A
+stock PM851 reports its native ~1 TB, so it passes the signature but fails the
+geometry check and caps at ~30 MB/s. For full rate, cap the drive to 960 GB with
+a host-protected area (HPA) so its reported capacity matches the row. It still
+mounts at 1 TB; it just records at the slow class until capped.
 
 ## The model string is the only real obstacle
 

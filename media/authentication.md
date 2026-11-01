@@ -1,10 +1,10 @@
 # MINI-MAG Authentication
 
-The camera authenticates an inserted drive with **two independent checks**. The
+The camera authenticates an inserted drive with **three independent checks**. The
 whole scheme was recovered from the camera firmware. It was reproduced offline.
 It uses only standard MD5 and plain string matching.
 
-The two checks set the media class and the data rate. They do not decide the
+The three checks set the media class and the data rate. They do not decide the
 mount in every case. One read failure does, and it is described below.
 
 ## The two gates
@@ -40,9 +40,32 @@ two.
   different. The camera's read fails, and the camera does **not mount the drive at
   all**. The drive must be able to answer that log page.
 
+### 3. Geometry match (soft gate)
+
+After the signature, the camera runs `AuthenticateREDMedia` (`mediainit.c`,
+`0x8009e62c`). It compares the drive's reported media-characteristics block
+field-by-field against the firmware's official spec row for that model. One of
+those fields is the **total sector count** (table entry `+0x24`/`+0x26` vs the
+drive's reported geometry at `+0xa0`/`+0xa2`). Any mismatched field sets a sticky
+flag, and the function returns failure.
+
+- **Geometry matches the model's spec row** → full data rate (the rate the media
+  row already set).
+- **Wrong sector count** (or any other mismatched field) → the firmware logs
+  *"Media in %s is NOT a RED product"* and forces throughput to about **30 MB/s**.
+  The drive **still mounts and records**.
+
+This is why a drive with a perfect signature can still be throttled: the signature
+does **not** contain the size, but this separate check does compare it. For
+`RED 512GB V5` the required count is **937,703,088 sectors (480 GB)** — not the
+drive's native capacity. A 1 TB drive reporting its native size passes the
+signature but fails geometry, so it caps at 30 MB/s unless its reported capacity
+is set (HPA) to the table's exact count, or you pick a media row whose sector
+count matches the real drive.
+
 So the model string is mandatory for full speed and for the correct media row. The
-signature is also needed for full speed. Neither one decides the mount, except when
-the log page cannot be read.
+signature and the geometry match are both also needed for full speed. None of the
+three decides the mount, except when the log page cannot be read.
 
 ## The signature algorithm
 
