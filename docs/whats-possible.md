@@ -16,11 +16,18 @@ techniques are deliberately not published.
   magazine, so **any compatible SATA SSD can serve as a mag**. Full detail is in
   the [media](../media/) folder — this is the one area documented end to end.
 
-## Understood but sensor-limited
+## Bounded by hardware
 
-- **Frame-rate and format limits are software** and are realistic unlock targets.
-  **Sensor resolution is not** — a 5K body cannot become 8K. Crossgrades only
-  make sense *within* a sensor family.
+- **Model identity is configuration** — the camera-type value can be changed
+  without swapping the binary. **Capability is not purely configuration:** it is
+  bounded by the sensor and by per-body hardware-capability flags.
+- **Sensor resolution is fixed hardware** — a 5K body cannot become 8K, and the
+  lineup uses genuinely different sensors across models.
+- **Some frame-rate and format limits are software gates** and are therefore
+  *candidate* unlock targets on hardware that already supports them. Which gates
+  actually open was **not verified on the device**, so treat specific feature
+  gains as unproven until tested. Crossgrades only make sense *within* a sensor
+  family, and even then only for the software-gated layer.
 
 ## In development — to be announced
 
