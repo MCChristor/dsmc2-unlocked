@@ -50,7 +50,8 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [tools/fw-crypto/](tools/fw-crypto) | Decrypt/unpack firmware packages, with the embedded RSA keys |
 | [tools/preset/](tools/preset) | Build/read encrypted `.preset` files (sets hidden flags) |
 | [hardware/serial-bridge/](hardware/serial-bridge) | USB↔CTRL RS232 bridge: RP2040 firmware + wiring |
-| [hardware/display-repair/](hardware/display-repair) | Touch LCD panels/digitizers, connectors, pogo-pin springs |
+| [hardware/display-repair/](hardware/display-repair) | Touch LCD panels, digitizers, connectors, thread inserts |
+| [hardware/expander-repair/](hardware/expander-repair) | Expander pogo-pin spring fix |
 
 ### The media folder
 
