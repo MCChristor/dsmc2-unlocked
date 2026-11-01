@@ -29,11 +29,26 @@ This is the interesting part for anyone looking at crossgrades:
 - Firmware images are packaged **per model** inside a combo, but each slice is
   the same program with different manifests and resource files.
 
-**Implication.** What distinguishes a cheaper body from a dearer one is largely
-configuration and resource manifests, not silicon — *within a sensor family*.
-What you **cannot** fake is the sensor itself: a 5K body has a 5K sensor and no
-amount of configuration turns it into 8K. Frame-rate caps, format options, and
-similar software-gated limits are a different story from raw sensor resolution.
+**What this does and does not mean.** The model *name* is config: the camera-type
+value selects which branding, resource manifest and defaults apply, and it can be
+changed without swapping the binary. That is confirmed.
+
+It does **not** follow that any model becomes any other. Two things gate what a
+given body can actually do:
+
+- **The sensor.** A 5K body has a 5K sensor; no configuration turns it into 8K.
+  Different models in the lineup use genuinely different sensors (Dragon, Helium,
+  Gemini, Monstro), so resolution and sensor behaviour are hardware, not a flag.
+- **Hardware-capability flags.** Features above the base model are gated by
+  per-body capability flags, not by the model name alone. Flipping the
+  camera-type does not by itself grant a capability the board does not report.
+
+So the honest summary is narrower than "it's all config": the **identity** is
+config, but **capability** is bounded by the sensor and the hardware-capability
+flags. What is realistically unlockable is the software-gated layer — frame-rate
+caps and format options on hardware that already supports them — not a jump to a
+different sensor class. The exact per-model capability differences were **not**
+fully mapped from the device, so treat crossgrade feature gains as unverified.
 
 ## Manifests
 
