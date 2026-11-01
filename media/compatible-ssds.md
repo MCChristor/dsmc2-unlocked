@@ -31,36 +31,67 @@ A genuine Samsung PM851 mSATA 1 TB reports the model string
 `SAMSUNG MZMTE1T0HMJH-00000` natively. This is an approved string in the media
 table. So:
 
-1. Buy a used Samsung PM851 1 TB mSATA. It is common and cheap.
+1. Get a used Samsung PM851 1 TB mSATA (common historically; scarcer now).
 2. Fit it to the [adapter board](hardware.md).
-3. Write the correct SMART page-0x90 signature for its identity. Do this
-   offline, with the formula in [authentication.md](authentication.md).
+3. Insert it and run `signature_write` on the camera — it writes the correct
+   page-0x90 signature for that drive. (You can also do it offline with the formula
+   in [authentication.md](authentication.md), but the camera is simpler.)
 
-There is no model-string flashing. The drive is 1 TB. This is larger than RED's
-biggest 960 GB mag. The only real work is the connector board.
+There is no model-string flashing. The drive is 1 TB, larger than RED's biggest
+960 GB mag. The only real work is the connector board.
 
-## Flashing path — any SSD to `RED 512GB V5` (medium difficulty)
+## The model string is the only real obstacle
 
-For any other cheap SSD:
+Everything comes down to making the drive **report an approved model string**. The
+signature is easy — the camera writes it for you with `signature_write` once the
+string matches (see [authentication.md](authentication.md)), so you need no MPTool
+and no host GPL-write for that step. There are three ways to get the model string,
+in increasing effort.
+
+### 1. Buy a drive that already reports an approved string (no flash)
+
+If you can find a drive whose native model string is in the media table, you do
+nothing to it — fit it, insert it, run `signature_write`. The Samsung PM851 mSATA
+1 TB reports `SAMSUNG MZMTE1T0HMJH-00000` natively, which is approved. The catch in
+2026 is that these specific OEM drives are increasingly scarce and used-only, so do
+not build a plan around one part number.
+
+### 2. Override the model string with a SATA bridge (no flash)
+
+Some SATA bridge/adapter chips let you override what the drive reports for ATA
+IDENTIFY — the model string and the WWN — without touching the SSD itself. With
+one of those you can make **any** SATA SSD present `RED 512GB V5` and a fixed WWN,
+then let the camera sign it. This avoids flashing entirely and is not tied to a
+scarce drive. It depends on finding a bridge that exposes IDENTIFY override and
+still passes the SMART log page through; verify both before relying on it.
+
+### 3. Flash the model string with the controller's MPTool
+
+For any cheap SSD whose controller you can reach:
 
 1. Identify the controller (Silicon Motion, Phison, etc.).
 2. Get the matching mass-production tool (MPTool). Archives live at usbdev.ru and
-   upantool.com. The tool is controller-specific. It is often undocumented in
-   English.
-3. Set the ATA IDENTIFY model string to `RED 512GB V5`. The MPTool erases the
-   NAND. So run it once on an empty drive.
-4. Write the page-0x90 signature.
+   upantool.com. The tool is controller-specific and often undocumented in English.
+3. Set the ATA IDENTIFY model string to `RED 512GB V5` (the MPTool erases the NAND,
+   so do it once on an empty drive).
+4. Insert and run `signature_write`.
 
-`RED 512GB V5` is type 1 (no serial in the hash). With a zero-WWN drive the
-17-byte signature is the copyable constant given in
-[authentication.md](authentication.md). The hard part is finding the correct
-MPTool for the controller. The cryptography is not the hard part.
+`RED 512GB V5` is the easiest target string (12 chars, type 1, no serial in the
+hash). The hard part is finding the right MPTool; the cryptography is not the hard
+part.
+
+> **Without firmware patching**, options 1–3 all still require the drive to report
+> an approved model string. Making *any* model string accepted — so no bridge and
+> no MPTool is needed — requires patching the firmware's whitelist check, which is
+> a separate, camera-write step and not covered here.
 
 ## Recommendation
 
-Use a **Samsung PM851 1 TB mSATA**. There is no flashing, it is 1 TB, and the
-whole task reduces to the adapter board plus writing one signature. If a PM851 is
-unavailable, a **Kingston KC600 flashed to `RED 512GB V5`** is the next best.
+The signature is never the obstacle — the model string is. If you can get a drive
+that natively reports an approved string (a used PM851 while they last), that is the
+least work. Otherwise a **SATA bridge that overrides IDENTIFY** avoids both flashing
+and scarce drives; a controller **MPTool flash to `RED 512GB V5`** is the fallback
+when you can reach the controller.
 
 ## Field confirmation
 
