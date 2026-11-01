@@ -80,3 +80,17 @@ Two things are worth noting:
 - The **KipperTie 2 TB** reports its **own** title, `KipperTie Longtake 2TB V1`.
   The camera still accepts it. So the approved-partner titles are part of the
   whitelist too, not only RED's own.
+
+## The same across all DSMC2 bodies
+
+The media authentication does not change between DSMC2 models. We checked this in
+the firmware, not from reports.
+
+- The SATA core firmware (the IOB0 image) is **byte-for-byte identical** across all
+  model slices in a firmware build. One SATA stack serves every body.
+- The media table and the validation logic are the **same** in the DSMC2 build that
+  runs HELIUM and MONSTRO as in the SCARLET-W build. Same model strings, same
+  signature check, same throttle behaviour.
+
+So the model whitelist and the SMART page-0x90 signature are the authentication on
+every DSMC2 body. A body does not add a different or deeper media check.
