@@ -7,26 +7,53 @@ decoder. The output is plain text you can read or send to someone.
 
 ## It is XOR, not encryption
 
-The log is **not encrypted**. It is XOR-obfuscated with a repeating key, and the
-key can be recovered from the file itself. No camera, no secret, no key file is
-needed to decode it.
+The log is **not encrypted**. It is XOR-obfuscated with a single fixed
+**1024-byte pad** that the firmware applies byte by byte, wrapping every 1024
+bytes:
 
-The format:
+```
+out[i] = PAD[i & 0x3FF] ^ plaintext[i]
+```
 
-- The file is a series of **512-byte records**.
-- Two 512-byte XOR keys alternate: record 0 uses key A, record 1 key B, record 2
-  key A again, and so on. The period is 1024 bytes.
-- Most of each record is padding, and the padding byte is `0x20` (an ASCII
-  space). That is the weakness. For each byte position, the **most common byte**
-  across all the even records is the key-A byte at that position XOR `0x20`. The
-  odd records give key B the same way.
+The pad is a **hardcoded constant**, not a derived or per-camera key. It lives in
+the camera app's read-only data, right after the `/log/log.data` path string and
+the `BEGIN LOG` banner (runtime address `0x8109bc6c`), and is applied by the log
+writer (`FUN_80841030` / `FUN_80841e48` in a Ghidra listing of the firmware). It
+is the same on every DSMC2 body (the app binary is identical across models) and
+decodes DSMC1 EPIC/SCARLET logs too (shared codebase). There is no seeding, no
+PRNG, and no dependence on the serial number.
 
-So the decoder recovers both keys by counting, then XORs every record.
+So there are two ways to decode, and you do not need the camera for either:
+
+1. **With the pad (exact).** The pad is published here as
+   [`log_xor_table.bin`](../tools/red-log-decoder/log_xor_table.bin) (1024 bytes).
+   XOR the file against it. Works on any length, including a short log.
+2. **Recovered from the file (no pad file).** The file is a series of **512-byte
+   records**; the 1024-byte pad shows up as two alternating 512-byte halves
+   (record 0 uses half A, record 1 half B, and so on). Most of each record is
+   padding and the padding byte is `0x20` (ASCII space), so for each byte
+   position the **most common byte** across the even records is the half-A byte
+   XOR `0x20`, and the odd records give half B. This needs a few hundred records
+   but no pad file, which is why the original decoder below uses it.
 
 ## Decoder
 
 Python 3, standard library only. No install, no dependency. It runs as-is on
-macOS, Linux, and Windows (`py decode_red_log.py ...` on Windows).
+macOS, Linux, and Windows (`py ...` on Windows).
+
+Exact, using the published pad (works on short logs too):
+
+```
+python3 tools/red-log-decoder/decode_direct.py <logfile> [output.txt]
+```
+
+```python
+tbl = open("log_xor_table.bin", "rb").read()          # 1024 bytes
+data = open(path, "rb").read()
+out = bytes(c ^ tbl[i & 0x3FF] for i, c in enumerate(data))
+```
+
+Or recover the pad from the file itself, no pad file needed:
 
 ```
 python3 tools/red-log-decoder/decode_red_log.py <logfile> [output.txt]

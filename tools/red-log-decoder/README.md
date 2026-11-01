@@ -3,13 +3,17 @@
 Decode and triage a DSMC2 camera log. Full explanation:
 [docs/log-decode.md](../../docs/log-decode.md).
 
-The camera log is XOR-obfuscated (not encrypted) with a repeating key recovered
-from the file itself — no camera, key, or secret needed.
+The camera log is XOR-obfuscated (not encrypted) with a fixed 1024-byte pad —
+no camera, key, or secret needed. The pad is a hardcoded firmware constant,
+shipped here as `log_xor_table.bin`, and is the same on every body.
 
 Python 3, standard library only. Runs on macOS, Linux, Windows as-is.
 
 ```
-# 1. decode the raw obfuscated file to text
+# 1a. decode with the published pad (exact, works on short logs)
+python3 decode_direct.py <logfile> [output.txt]
+
+# 1b. or recover the pad from the file itself (no pad file needed)
 python3 decode_red_log.py <logfile> [output.txt]
 
 # 2. clean + split + triage the decoded text
