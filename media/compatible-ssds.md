@@ -79,23 +79,20 @@ independently:
 
 ## Controller and MPTool notes
 
-The camera checks only the model string and the SMART page-0x90 signature (and
-the optional page 0x91). It does not check the SSD controller. It does not check
-the controller's internal settings. But the controller setup still matters for
-two practical reasons.
+The camera does not check the SSD controller. It does not check the controller's
+internal settings. The firmware reads the drive only for the model string, the
+hard-disk device type, and the model, serial and WWN that feed the signature hash.
+There is no controller, link-speed, or queue check in the accept path.
 
-First, you set the model string and the WWN through the controller's production
-tool (MPTool). So "how the SSD is set up in the MPTool" is how you satisfy the
-model gate. It is also how you feed the signature hash.
+But the controller still matters for two practical reasons.
 
-Second, not every controller lets a host write the vendor SMART log page 0x90.
-If the controller or its MPTool config does not expose that log, you cannot place
-the signature.
+First, the drive must answer the vendor SMART log page 0x90. If the controller
+does not expose that log, the camera's read fails and the drive does not mount at
+all. This is the real hard requirement on the controller.
 
-Genuine mags also differ from each other. The signature is WWN-bound. So a
-different drive has a different hash. Different capacities require different
-signature types.
+Second, you set the model string through the controller's production tool. The
+drive must report an approved model string for full speed. A drive that cannot be
+made to report one still mounts, but only at the low-speed class.
 
-None of this is an extra camera check. It is the tooling needed to meet the two
-gates. If a copied signature fails on a drive, check that the drive's WWN is not
-non-zero.
+So the controller work is about meeting the two gates, not about passing a hidden
+camera check. The accept logic is the same on every DSMC2 body.
