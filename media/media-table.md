@@ -93,3 +93,27 @@ the firmware, not from reports.
 So the media check is the same on every DSMC2 body. The model string selects the
 media row and speed. The SMART page-0x90 signature sets full speed. A readable
 page 0x90 is required to mount. No body adds a different or deeper media check.
+
+## Can the table be changed?
+
+The table is data in the firmware image — in 7.4.1 it is an array of 26 entries at
+a fixed address, each entry carrying a model string, the required signature type,
+and the data-rate class. Because the running firmware has no memory protection and
+the bootloader does not verify the installed image
+([docs/platform.md](../docs/platform.md)), the table can be changed two ways:
+
+- **Live, no flash.** From the debug shell, `write reg <addr> <val>` edits the
+  table in RAM. The change is lost on reboot and re-applied each boot. This is how
+  you would force any model string to a full-speed row, or make the lookup always
+  succeed, without altering the drive at all.
+- **Permanent.** Edit the table bytes in the firmware image and write it into the
+  boot slot; it then runs on every boot.
+
+Either one removes the model-string obstacle entirely — no renamed drive, no SATA
+bridge, no MPTool — at the cost of modifying the camera's firmware (in RAM or on
+NAND) rather than the drive.
+
+> **Status: the table's location and format are confirmed from the firmware; a
+> table edit has not been applied on a camera.** Treat this as a known, reachable
+> lever, not a verified recipe. For drive-side options that need no firmware change
+> at all, see [compatible-ssds.md](compatible-ssds.md).

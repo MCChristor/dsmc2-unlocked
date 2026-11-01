@@ -31,7 +31,8 @@ This folder documents that path in full.
 | Document | What it covers |
 |---|---|
 | [authentication.md](authentication.md) | The two-gate lock, the exact signature algorithm, page 0x90/0x91 |
-| [media-table.md](media-table.md) | The firmware media table: every approved model and its OEM |
+| [media-table.md](media-table.md) | The firmware media table: every approved model and its OEM, and whether it can be changed |
+| [mag-firmware.md](mag-firmware.md) | The MINI-MAG controller `.rmf` firmware: format, identity template, clone lead |
 | [compatible-ssds.md](compatible-ssds.md) | What to buy in 2026, the easy path, and the flashing path |
 | [hardware.md](hardware.md) | The connector/adapter board — the one remaining physical task |
 
