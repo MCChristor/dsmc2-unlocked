@@ -15,8 +15,9 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
   change.
 - **Media authentication is solved.** The check that decides which drive the camera
   accepts is reverse-engineered. It is reproduced offline against a genuine
-  magazine. So **any compatible SATA SSD can work as a mag**. The full detail is in
-  the [media](../media/) folder.
+  magazine. So **a compatible SATA SSD can work as a mag** once it reports a
+  whitelisted model string and carries the RED signature. The full detail and the
+  exact conditions are in the [media](../media/) folder.
 
 ## Bounded by hardware
 

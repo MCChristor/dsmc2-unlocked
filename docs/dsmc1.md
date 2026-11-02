@@ -24,11 +24,13 @@ released 2017-12-20).
   same reused-keystream stream cipher, so the same recovered keystream reads DSMC1
   configs too. See [feature-unlock.md](feature-unlock.md).
 - **Main processor.** TI OMAP-class ARM running `dsmc_program.mem`, same as DSMC2.
-- **ISP and IOB are Tensilica cores, not FPGAs or fixed ASICs.** DSMC1's
-  `CAMERA_CONFIG.cfg` names the loader paths `TENSILICA_ISP_BIN_PATH` and
+- **ISP and IOB run Xtensa code, loaded from NAND.** DSMC1's `CAMERA_CONFIG.cfg`
+  names the loader paths `TENSILICA_ISP_BIN_PATH` and
   `TENSILICA_IOB0/IOB1/PROIO_IOB0_BIN_PATH`, and the ISP instruction-RAM bootstrap
-  is the same core family as DSMC2 (byte-identical first block). Each core still
-  loads its own `iram`/`dram` from NAND at boot. See [platform.md](platform.md).
+  is byte-identical to DSMC2 — so both generations use the same part. The image
+  disassembles cleanly as Xtensa (see [platform.md](platform.md)), which confirms
+  the ISA. **Fabric type (ASIC vs FPGA) is still not settled by the firmware** —
+  Xtensa runs in both, and the image uses both words.
 
 ## What differs
 

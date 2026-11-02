@@ -21,13 +21,47 @@ line to the exact processor that emitted it.
 | `iob1/iram.bin`, `iob1/dram.bin` | IOB1: the black-shading / bad-pixel calibration engine |
 | `proio_iob0/` | PRO I/O (its data section is a zero-filled stub) |
 | `lsbfpga/wlsbfpga.4.bin`, `.5.bin` | Xilinx Kintex-7 LSB FPGA bitstreams (~5 MB each) |
-| `dsp/rdc_dsp_app.out` | TI C6x DSP application (~1.2 MB) |
-| `redpine/redpine-boot.1.bin`, `redpine.1.bin` | WiFi/BT module firmware |
+| `dsp/rdc_dsp_app.out` | TI **TMS320C64x+** DSP app (~1.2 MB): COFF magic `0x00c2`, built with the TI `c6x/6.0.14` toolchain + TI VLIB, `_C64_*` symbols |
+| `redpine/redpine-boot.1.bin`, `redpine.1.bin` | WiFi/BT module firmware — **RSI RS9113** (Redpine), fw `1.0.10MM`; boot sends `RS9113.NBZ…rps` |
 
 A `dram.bin` begins with a table of pointers into its own image — for the ISP, the
 first word points exactly at the string `isp%d: component size overflow …`. That
 confirms the load base (`0x40000000`) self-consistently and identifies the first
 words as a `char*[]` message catalogue.
+
+### ISA, fabric, and load map
+
+All four cores run **Xtensa**, confirmed by disassembly: each `iram.bin` loads as
+`Xtensa:LE:32:default` in Ghidra (12.1.4 ships an Xtensa module) and decodes cleanly,
+with a textbook Xtensa reset vector (`wsr WindowBase` / `WindowStart`, the
+windowed-register ABI, `wsr INTENABLE / CCOUNT / EXCSAVE1-7 / PS`, `l32r`, `jx`):
+
+| core | instructions | functions |
+|---|---|---|
+| ISP | ~12,081 | 277 |
+| IOB0 | ~15,068 | 290 |
+| IOB1 | ~10,703 | 159 |
+| proio IOB0 | ~2,650 | 167 |
+
+A wrong ISA would decode to garbage, so this proves the `TENSILICA_*` config name is
+an Xtensa core (not just a vendor label).
+
+**Load map:** IRAM at `0x40000000`, DRAM at `0x3FFE0000` (just below). Rebasing to
+`0x40000000` and mapping `dram.bin` at `0x3FFE0000` makes 2,421 code references land
+inside the data block and the literal-pool self-references (`0x40002918`,
+`0x400028c0`) land inside IRAM — both bases confirmed by resolution, not assumed.
+With DRAM mapped, functions anchor to their roles by the strings they reference:
+XAUI DMA to the IOB (`xaui_dma_write`, `iomap_write`), DDR bring-up (`Modified SCL
+V2`, `check_window`), the R3D wavelet encoder (tile / component / metadata TX, CRC,
+`G1/B/R/G2` checks) and a DDR self-test.
+
+**Fabric (ASIC vs FPGA) is not determinable from the firmware.** Xtensa runs as a
+hardened ASIC core and as an FPGA soft core, so the ISA does not decide it, and the
+image uses both words for these subsystems — `ASIC` (`IOB ASIC Reg`, `Load ASIC bins
+from host`, `ASIC Temperature`, `Monitor Asic(IOB)`) and `FPGA` (`FPGA_ISP1 / ISP2 /
+IOB status`). The only files RED *names* as FPGA images are the LSB
+(`wlsbfpga.*.bin`) and EVF (`wevf_fpga.1.bin`), not the ISP/IOB. Settling it would
+take a physical method (decap / IR microscopy), not the firmware.
 
 ### Why the strings matter
 
@@ -56,6 +90,11 @@ lcd:         gw3400 (7"), gw3400_4_7in (4.7")
 lensmount:   canon, canon-s, nikon, pl, pl-s
 sidehandle, flatui, evf (wevf_fpga)
 ```
+
+The MCU family is identifiable from the images: **STM32** strings appear in
+`jetpack`, `hdk`, `hdkp`, `hdkpwv`, `portx`, `rvxl`, `rvexp`, `vmexp` (e.g. a
+`stm32>` prompt and `HW Version / SW Version`), and `rcomPSOC` is a **Cypress
+PSoC**.
 
 A few are **encrypted on the accessory side** (entropy ~8.0) — the motorised and
 FPGA-loading images (`mtrx`, `mproxy`, `mtrtfpg`, `mwrles`) and the REDmote
