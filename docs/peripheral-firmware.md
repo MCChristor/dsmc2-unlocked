@@ -21,7 +21,7 @@ line to the exact processor that emitted it.
 | `iob1/iram.bin`, `iob1/dram.bin` | IOB1: the black-shading / bad-pixel calibration engine |
 | `proio_iob0/` | PRO I/O (its data section is a zero-filled stub) |
 | `lsbfpga/wlsbfpga.4.bin`, `.5.bin` | Xilinx Kintex-7 LSB FPGA bitstreams (~5 MB each) |
-| `dsp/rdc_dsp_app.out` | TI **TMS320C64x+** DSP app (~1.2 MB): COFF magic `0x00c2`, built with the TI `c6x/6.0.14` toolchain + TI VLIB, `_C64_*` symbols |
+| `dsp/rdc_dsp_app.out` | TI **TMS320C64x+** DSP app (~1.2 MB): TI C6000 COFF (magic `0x00c2`), 56 sections, 7,951 symbols, `c6x/6.0.14` toolchain, **TI DSP/BIOS** kernel. The brain-module vision/audio DSP: Haar **face detection** (`FaceDetection/fd_algorithm`, TI VLIB pyramid), DoG **autofocus / video measurements** (`af_algorithm`), an on-DSP **audio server** (`RAudioServer`), an **imaging command server** (`CImagingServer`), and **sleep/power** coordination (`CSleepMgr`). IPC to the ARM over DSP/BIOS MSGQ/MPCS (DSPLink). Not disassembled (Ghidra has no C6x module) — role from COFF symbols + source paths |
 | `redpine/redpine-boot.1.bin`, `redpine.1.bin` | WiFi/BT module firmware — **RSI RS9113** (Redpine), fw `1.0.10MM`; boot sends `RS9113.NBZ…rps` |
 
 A `dram.bin` begins with a table of pointers into its own image — for the ISP, the
@@ -46,14 +46,23 @@ windowed-register ABI, `wsr INTENABLE / CCOUNT / EXCSAVE1-7 / PS`, `l32r`, `jx`)
 A wrong ISA would decode to garbage, so this proves the `TENSILICA_*` config name is
 an Xtensa core (not just a vendor label).
 
-**Load map:** IRAM at `0x40000000`, DRAM at `0x3FFE0000` (just below). Rebasing to
-`0x40000000` and mapping `dram.bin` at `0x3FFE0000` makes 2,421 code references land
-inside the data block and the literal-pool self-references (`0x40002918`,
-`0x400028c0`) land inside IRAM — both bases confirmed by resolution, not assumed.
+**Load map:** IRAM at `0x40000000`, DRAM at `0x3FFE0000` (IRAM − 0x20000) for the
+ISP, IOB0 and IOB1 — each confirmed by resolution, not assumed (mapping `dram.bin`
+at `0x3FFE0000` makes the code's references land on the data block's string starts;
+ISP 2,421 refs, IOB0 79 refs/23 funcs, IOB1 91 refs/16 funcs). `proio_iob0` is the
+exception: its `dram.bin` holds **no strings** (a register/parameter image), so no
+string base can be pinned and no function anchoring is possible there.
+
 With DRAM mapped, functions anchor to their roles by the strings they reference:
-XAUI DMA to the IOB (`xaui_dma_write`, `iomap_write`), DDR bring-up (`Modified SCL
-V2`, `check_window`), the R3D wavelet encoder (tile / component / metadata TX, CRC,
-`G1/B/R/G2` checks) and a DDR self-test.
+- **ISP** — XAUI DMA, DDR bring-up (`Modified SCL V2`, `check_window`), the R3D
+  wavelet encoder (tile / component / metadata TX, CRC, `G1/B/R/G2` checks), DDR
+  self-test.
+- **IOB0** — SATA/HBA (`SATA device %s on HBA%d`, `PxSSTS`), ISP↔C2C transport
+  (`C2C RX ERROR`, `iob iomap_write/read … isp_%d timeout`), SPI to the
+  accelerometer (`STACCELERO`), XDMA, a DDR test.
+- **IOB1** — sensor calibration: `analyze_slope`, `using old dark level`,
+  factory/user **bad-pixel maps** (`pFactoryMap`, `pUserMap`), Bayer `green align
+  odd rows`.
 
 **Fabric (ASIC vs FPGA) is not determinable from the firmware.** Xtensa runs as a
 hardened ASIC core and as an FPGA soft core, so the ISA does not decide it, and the
