@@ -5,7 +5,8 @@ facts come from a SCARLET-W 5K on firmware 7.4.1.
 
 ## Main processor and OS
 
-- **Application processor:** a TI OMAP-class ARM Cortex-A8. It is 32-bit. It uses
+- **Application processor:** a TI OMAP-class ARM (Cortex-A8-class; the OMAP family
+  is identified from the firmware, the exact core is inferred). It is 32-bit. It uses
   one flat address space with **no memory protection (no MMU)**.
 - **Operating system:** ThreadX (Express Logic). This real-time OS is now open
   source. The build uses the Green Hills compiler.
@@ -50,21 +51,19 @@ Each core loads its own firmware image at boot.
 | DSP | TI TMS320C6x | Brain-module signal processing |
 | WiFi/BT | RSI RS9113 (Redpine) | Wireless |
 
-The ISP and IOB core identity is not a guess: `loadSystemConfigFile` declares the
-load paths `TENSILICA_ISP_BIN_PATH` and `TENSILICA_IOB0 / IOB1 / PROIO_IOB0_BIN_PATH`,
-plus the topology (`ISP_COUNT 2`, `IOB_COUNT 1`, `ISP_SYSTEM_SLICES 60`) — the
-firmware names the ISA itself. The DSMC1 (EPIC DRAGON) `isp/iram.bin` bootstrap is
-byte-identical to the DSMC2 SCARLET-W one, so both generations run the same
-programmable Xtensa cores — **not blank FPGAs, not fixed-function ASICs**. Each core
-loads its `iram`/`dram` from NAND at boot (`DEBUG_LOAD_ASIC_BINS_FROM_HOST` can push
-replacements). The limit: the Xtensa code itself has **not** been disassembled —
-only the cores' identity, load path, and their plaintext `dram` string tables are
-recovered; reversing the cores needs an Xtensa toolchain, not the ARM path used for
-`dsmc_program.mem`.
+The ISP/IOB run **Xtensa** code loaded from NAND (config paths `TENSILICA_*_BIN_PATH`;
+`ISP_COUNT 2`, `IOB_COUNT 1`). The ISA is confirmed by disassembly — the images load
+cleanly as Xtensa in Ghidra. Whether the silicon is an **ASIC or an FPGA is not
+determinable from the firmware** (it uses both words); only a physical method would
+settle it. Load map, image layout, per-core function anchoring and the fabric
+evidence are in [peripheral-firmware.md](peripheral-firmware.md).
 
-Accessories carry their own small MCU firmware. These include the lens mounts, the
-rear I/O modules, the battery module, the FlatUI, and the EVF. Most are ARM-Thumb
-(STM32-class).
+Accessories carry their own MCU firmware. The rear modules, HDK, expanders and
+JetPack are **STM32** (confirmed in e.g. `jetpack`, `hdk`, `portx`, `rvxl`, `rvexp`,
+`vmexp`); `rcomPSOC` is a **Cypress PSoC**; lens mounts, the LCD bridge (`gw3400`),
+side handle, FlatUI and EVF each carry an image — see
+[peripheral-firmware.md](peripheral-firmware.md) and
+[accessory-bus.md](accessory-bus.md).
 
 ## Software components
 

@@ -11,7 +11,8 @@ fails its signature is logged, not rejected. This matters if you want to build o
 repair your own board (see the DIY note at the end).
 
 Everything here was recovered from the camera firmware (the reference image, a
-SCARLET-W on 7.4.1). The relevant routines, by name from the symbol map:
+SCARLET-W on 7.4.1). The relevant routines, by name from the symbol map (function
+names read from the log and assertion strings the build left in the binary):
 
 ```
 module_cap_if::handle_redinfo            0x804c5374
