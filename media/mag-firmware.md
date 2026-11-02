@@ -1,6 +1,6 @@
 # MINI-MAG Controller Firmware (`.rmf`)
 
-A RED MINI-MAG is an mSATA SSD built on a **Silicon Motion SM2246EN** controller.
+The one genuine MINI-MAG firmware examined here (`RED 960GB V3`) is for an mSATA SSD built on a **Silicon Motion SM2246EN** controller. Other SKUs are assumed similar but not independently confirmed.
 Its controller firmware ships as a `.rmf` file, which the camera flashes to the mag
 via **Menu > Settings > Maintenance > Upgrade > Media**. This page documents the
 `.rmf` format, based on the genuine `RED 960GB V3` firmware (`0301-000.rmf`).
@@ -46,7 +46,15 @@ FirmWare 0301-000
 ```
 
 So the **model string, serial, and WWN a mag reports are stored in the `.rmf`**, at
-fixed offsets, in plaintext.
+fixed offsets, in plaintext. (Note the template reads `RED 960GB V4` even though
+this file is the `RED 960GB V3` firmware — the template string and the file's
+media-table name are set independently.)
+
+The `0x80`–`0x1F0` block is a full ATA IDENTIFY template, so it also carries the
+capability/version words that `AuthenticateREDMedia` checks (see
+[authentication.md](authentication.md), gate 3). This is why the `.rmf` route, if
+it works, could make a clone pass **all three** camera gates natively — it fixes
+not just the model string but the IDENTIFY fields a retail controller gets wrong.
 
 ## Why this could matter (unproven)
 

@@ -4,8 +4,11 @@ The camera authenticates an inserted drive with **three independent checks**. Th
 whole scheme was recovered from the camera firmware. It was reproduced offline.
 It uses only standard MD5 and plain string matching.
 
-The three checks set the media class and the data rate. They do not decide the
-mount in every case. One read failure does, and it is described below.
+All three checks gate the **full data rate**: fail any one and the firmware caps
+the drive to ~30 MB/s, which is too slow for high-bitrate R3D. They do not block
+the *mount* — a failing drive still mounts and records at the capped rate — so
+"still mounts" is not a pass. The one thing that does block the mount is an
+unreadable SMART log page 0x90, described below.
 
 ## The three checks
 
@@ -24,7 +27,7 @@ compiled into the firmware. The match must be **exact**. See
 - The two most useful approved strings are **`RED 512GB V5`** and
   **`SAMSUNG MZMTE1T0HMJH-00000`**.
 
-### 2. SMART-log MD5 signature (soft gate)
+### 2. SMART-log MD5 signature (full-rate gate; mount still happens)
 
 The camera then reads a **vendor SMART log, page 0x90**. This page holds a
 signature. The camera recomputes the expected signature. The camera compares the
@@ -40,32 +43,65 @@ two.
   different. The camera's read fails, and the camera does **not mount the drive at
   all**. The drive must be able to answer that log page.
 
-### 3. Geometry match (soft gate)
+### 3. ATA IDENTIFY field match (full-rate gate; mount still happens)
 
 After the signature, the camera runs `AuthenticateREDMedia` (`mediainit.c`,
-`0x8009e62c`). It compares the drive's reported media-characteristics block
-field-by-field against the firmware's official spec row for that model. One of
-those fields is the **total sector count** (table entry `+0x24`/`+0x26` vs the
-drive's reported geometry at `+0xa0`/`+0xa2`). Any mismatched field sets a sticky
-flag, and the function returns failure.
+`0x8009e62c`). It compares the drive's **live ATA IDENTIFY DEVICE response**
+field-by-field against the firmware's official spec row for that model. It checks
+**~29 fields**, not just the size. The spec row is the media-table entry (stride
+`0x4e`, base `0x80f3689c`), selected by media-ID. The drive's IDENTIFY is kept at
+`pDeviceInfo+0x8c`; IDENTIFY word *W* is at `+0x8c + 2*W`. The error number the
+log prints (`Media authentication error %d ...`) **is the ATA IDENTIFY word
+index**. Any mismatched field sets a sticky flag, and the function returns
+failure.
 
-- **Geometry matches the model's spec row** → full data rate (the rate the media
+The fields compared (table offset → IDENTIFY word → log error number):
+
+| table off | IDENTIFY word | err # | what it is |
+|---|---|---|---|
+| `+0x04..+0x0c` | 0,1,2,3,6 | 0,1,2,3,6 | general config, cyls, heads |
+| `+0x0e..+0x18` | 49,50,53,54,55,56 | 49,50,53–56 | capabilities, field-valid, CHS |
+| `+0x1a` | 63 (mask `0x7`) | 63 | multiword DMA |
+| `+0x1c` | 64 | 64 | PIO modes |
+| `+0x1e..+0x24` | 69,75,76,80 | 69,75,76,80 | add'l support, queue depth, SATA caps, major ver |
+| `+0x26..+0x34` | 81,82,83,84,85(m `0x7218`),86(m `0xbc07`),87,88(m `0x7f`) | 81–88 | minor ver, command sets |
+| `+0x36` | **100–103 (8-byte LBA)** | **100** | **total sector count** |
+| `+0x3e` | 106 | 106 | logical/physical sector relation |
+| `+0x40` | 117–118 (4-byte) | 117 | logical sector size |
+| `+0x44..+0x46` | 119,120 (masked) | 119,120 | command set ext |
+| `+0x48` | 169 | 169 | TRIM support |
+| `+0x4a..+0x4c` | 222,223 | 222,223 | transport version |
+
+- **All fields match the model's spec row** → full data rate (the rate the media
   row already set).
-- **Wrong sector count** (or any other mismatched field) → the firmware logs
-  *"Media authentication error %d ..."* (`AuthenticateREDMedia`) and forces throughput to about **30 MB/s**.
-  The drive **still mounts and records**.
+- **Any mismatched field** → the firmware logs the per-field errors and forces
+  throughput to about **30 MB/s** (`HandleDeviceAdded` writes `0x1e` to both rate
+  fields `+0x5de04`/`+0x5de08`). The drive **still mounts and records**.
 
-This is why a drive with a perfect signature can still be throttled: the signature
-does **not** contain the size, but this separate check does compare it. For
-`RED 512GB V5` the required count is **937,703,088 sectors (480 GB)** — not the
-drive's native capacity. A 1 TB drive reporting its native size passes the
-signature but fails geometry, so it caps at 30 MB/s unless its reported capacity
-is set (HPA) to the table's exact count, or you pick a media row whose sector
-count matches the real drive.
+Two things people get wrong here:
 
-So the model string is mandatory for full speed and for the correct media row. The
-signature and the geometry match are both also needed for full speed. None of the
-three decides the mount, except when the log page cannot be read.
+- **The sector count is at table `+0x36` (an 8-byte LBA, error number 100), NOT
+  `+0x24`.** `+0x24` is expected ATA word 80 (major version). A drive whose
+  capacity matches the row passes error-100 regardless.
+- **This is mostly a firmware-revision check, not a size check.** Words
+  69/75/76/80/81/83/84/87/117/119/120 are capability and version bits baked into
+  the drive's own controller firmware. A retail SSD that reports the right model
+  string and the right capacity can still fail these, because its controller fw
+  advertises a different feature set than the drive RED shipped. You cannot change
+  them without reflashing the SSD controller — so for a non-genuine drive this
+  gate is the one you clear with the **camera-side patch** (`media-any`, below),
+  not by touching the drive.
+
+For `RED 512GB V5` the row's sector count is **937,703,088 (480 GB)**. For
+`RED 1TB V1` (media-ID 19, the Samsung row) it is **2,000,409,264** — exactly
+what a 1 TB `SAMSUNG MZMTE1T0HMJH-00000` reports (1,024,209,543,168 bytes), so
+that drive passes error-100 and still caps at 30 MB/s on the *capability* words
+alone.
+
+So all three are mandatory for full speed: the model string (also selects the
+media row), the page-0x90 signature, and the IDENTIFY-field match. None of the
+three blocks the mount — the drive mounts and records at ~30 MB/s on any failure
+— except that an unreadable page 0x90 does stop the mount.
 
 ## The signature algorithm
 
@@ -169,7 +205,7 @@ the "properly signed" flag when that fails. So a type-2 record parked at offset
 ```
 model    = SAMSUNG MZMTE1T0HMJH-00000      (26 chars, matched exactly)
 serial   = S1W8NYAG500153
-sectors  = 2,000,409,264                   (= row 14 "RED 1TB V1" +0xBC, geometry passes)
+sectors  = 2,000,409,264                   (= media-ID 19 "RED 1TB V1" row, LBA @ table +0x36, err-100 passes)
 WWN words 108..111 = 0000 0000 0000 0001
 wwn8     = 01 00 00 00 00 00 00 00
 ```

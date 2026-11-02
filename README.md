@@ -66,7 +66,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [media/README.md](media/README.md) | Overview and the short version |
 | [media/authentication.md](media/authentication.md) | The three checks (model string, signature, geometry) and the signature algorithm |
 | [media/media-table.md](media/media-table.md) | Every approved model string and its OEM |
-| [media/compatible-ssds.md](media/compatible-ssds.md) | What to buy in 2026, the easy path, the flashing path |
+| [media/compatible-ssds.md](media/compatible-ssds.md) | What to buy in 2026, and why a buyable drive needs the camera patch for full rate |
 | [media/mag-firmware.md](media/mag-firmware.md) | The MINI-MAG controller `.rmf` firmware format |
 | [media/hardware.md](media/hardware.md) | The connector/adapter board |
 
