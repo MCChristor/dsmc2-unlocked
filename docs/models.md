@@ -49,26 +49,14 @@ This part matters for crossgrades:
 
 ## What this means, and what it does not
 
-The model **name** is configuration. The camera-type value selects the branding,
-the resource manifest, and the defaults. You can change it without swapping the
-binary. This is confirmed.
-
-It does **not** follow that one model becomes another. Two things set what a body
-can actually do:
-
-- **The sensor.** A 5K body has a 5K sensor. No configuration turns it into 8K.
-  Different models use genuinely different sensors (Dragon, Helium, Gemini,
-  Monstro). So resolution and sensor behaviour are hardware, not a flag.
-- **Hardware-capability flags.** Features above the base model are gated by
-  per-body capability flags, not by the model name. A changed camera-type does not
-  by itself grant a capability that the board does not report.
-
-So the honest summary is narrow. The **identity** is configuration. The
-**capability** is bounded by the sensor and the hardware-capability flags. The
-software-gated layer is the realistic unlock target. That means frame-rate caps and
-format options on hardware that already supports them. It does not mean a jump to a
-different sensor class. The exact per-model capability differences were **not**
-fully mapped from the device. So treat crossgrade feature gains as unverified.
+The model **name** is configuration — the camera-type value selects branding, the
+resource manifest, and defaults, and can be changed without swapping the binary
+(confirmed). It does **not** follow that one model becomes another: capability is
+bounded by the sensor (a 5K body has a 5K sensor; no flag makes it 8K) and by the
+per-body hardware-capability flags. The full reasoning, the capability table, and
+the "crossgrade gains are unverified on the device" caveat are in
+[feature-unlock.md](feature-unlock.md); this page owns only the camera-type tag
+table above.
 
 ## Per-model data files
 

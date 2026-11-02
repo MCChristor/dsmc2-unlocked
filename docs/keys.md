@@ -134,9 +134,8 @@ no amount of work on the camera changes that, because RED's signing secret is no
 on the camera.
 
 This does not block repair or preservation, for one concrete reason: the
-**bootloader does not verify the installed OS image**. It opens
-`/imageN/dsmc_program.mem`, reads it, and jumps to it — no hash, no signature, no
-CRC, no decryption on that path. A patched image written into the boot slot runs.
+**bootloader does not verify the installed OS image** (the mechanism is in
+[platform.md](platform.md)) — a patched image written into the boot slot runs.
 Signing matters only for the packaged *upgrade* flow, and that flow is not the
 only way onto the device.
 
