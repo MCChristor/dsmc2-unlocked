@@ -83,14 +83,44 @@ Two things people get wrong here:
 - **The sector count is at table `+0x36` (an 8-byte LBA, error number 100), NOT
   `+0x24`.** `+0x24` is expected ATA word 80 (major version). A drive whose
   capacity matches the row passes error-100 regardless.
-- **This is mostly a firmware-revision check, not a size check.** Words
-  69/75/76/80/81/83/84/87/117/119/120 are capability and version bits baked into
-  the drive's own controller firmware. A retail SSD that reports the right model
-  string and the right capacity can still fail these, because its controller fw
-  advertises a different feature set than the drive RED shipped. You cannot change
-  them without reflashing the SSD controller — so for a non-genuine drive this
-  gate is the one you clear with the **camera-side patch** (`media-any`, below),
-  not by touching the drive.
+- **This is mostly a version / command-set check, not a size check.** Words
+  69/75/76/80/81/83/84/87/117/119/120 are capability, version and command-set
+  bits baked into the drive's own controller firmware. A retail SSD that reports
+  the right model string and the right capacity can still fail these, because its
+  controller fw advertises a different feature set than the drive RED shipped. You
+  cannot change them without reflashing the SSD controller — so for a non-genuine
+  drive this gate is the one you clear with the **camera-side patch**
+  (`media-any`, below), not by touching the drive.
+
+### Worked case — a Silicon Motion SM2246EN 1 TB drive
+
+A real `SAMSUNG MZMTE1T0HMJH-00000` (SM2246EN controller, ATA version ACS-2) was
+whitelisted and correctly signed, its capacity matched the `RED 1TB V1` row
+exactly (so error-100 passed), and it **still** capped at 30 MB/s. It failed the
+version and command-set words against that row:
+
+| word | `RED 1TB V1` (ID 19) expects | this drive reports |
+|---|---|---|
+| 80 (major version) | `0x03FC` | `0x03F0` |
+| 81 (minor version) | `0x0039` | `0x0000` |
+| 83 (command sets) | `0x7D01` | `0x7F01` |
+| 84 / 87 (command sets ext) | `0x4163` | `0x4063` |
+| 119 / 120 (command sets) | `0x401E` / `0x401C` | `0x4018` / `0x4018` |
+
+Note word 80: `0x03FC` vs `0x03F0` differ only in bits 2–3 (obsolete ATA-2/ATA-3
+flags). **Neither sets bit 10 (`0x400` = ACS-3)** — no media row requires ACS-3.
+The real divergence is the minor-version number and the command-set words
+(83/84/87/119/120), which encode the exact feature set of the controller firmware
+RED shipped. An SM2246EN cannot be made to report those without a controller
+reflash, so this drive has **no native full-rate path at 1 TB**; it needs
+`media-any`.
+
+The only auth rows whose version/command-set words match a stock SM2246EN
+(ACS-2) drive are the small ones: media-ID 35 (120 GB) and media-ID 37 (240 GB).
+Reporting one of those strings **and** HPA-capping the drive to that capacity
+(so error-100 also passes) is the only no-patch way to clear gate 3 on this
+controller — at the cost of nearly all the drive's capacity, so it is not useful
+for video.
 
 For `RED 512GB V5` the row's sector count is **937,703,088 (480 GB)**. For
 `RED 1TB V1` (media-ID 19, the Samsung row) it is **2,000,409,264** — exactly
