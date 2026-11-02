@@ -14,18 +14,26 @@ This folder documents that path in full.
 
 - **The bus is SATA-only** (SATA III, through an on-board SATA3 FPGA). NVMe and
   CFexpress/CF/SD do **not** work. Do not buy them.
-- A MINI-MAG is a stock **mSATA** SSD in a caddy. At least the 960 GB V3 unit
-  uses the Silicon Motion SM2246EN controller. Nothing is exotic.
+- A MINI-MAG is a stock **mSATA** SSD in a caddy. The one genuine firmware we
+  examined (960 GB V3) uses the Silicon Motion SM2246EN controller. Nothing is
+  exotic.
 - The camera runs **three checks** on an inserted drive: the drive's reported
-  **model string** (whitelist), an **MD5 signature** stored in a SMART log page,
-  and a **geometry** match on the reported sector count. You can reproduce all
-  three offline. There is no RSA, no server, and no secret that you cannot derive.
-  See [authentication.md](authentication.md).
-- So **any SATA SSD can be a mag at full speed**. The drive must report an
-  approved model string. The drive must also carry the correct signature. An
-  unapproved model still mounts, but at the low data rate. The controller, the
-  NAND, and the capacity do not gate access. They only affect speed and record
-  time.
+  **model string** (whitelist), an **MD5 signature** in a SMART log page, and an
+  **ATA IDENTIFY field match** (`AuthenticateREDMedia` compares ~29 IDENTIFY
+  fields against the model's spec row — the sector count is only one of them, and
+  the controller-firmware capability/version words are the ones a retail drive
+  usually fails). There is no RSA, no server, and no secret you cannot derive. See
+  [authentication.md](authentication.md).
+- **All three checks gate full rate.** An unapproved or unsigned drive, or one
+  whose IDENTIFY fields don't match, still mounts and records — but the firmware
+  caps it to ~30 MB/s, which is useless for video. So "it still mounts" is not a
+  pass: for a usable drive **all three checks are mandatory**. Only the *mount
+  itself* is permissive.
+- The controller, NAND, and raw capacity do not gate the mount. But a drive whose
+  controller firmware reports the wrong IDENTIFY words **cannot reach full rate
+  without a camera-side firmware patch** (`media-any`), because you cannot rewrite
+  those words on the drive without reflashing its controller. See
+  [authentication.md](authentication.md) and the patch tooling.
 
 ## Documents
 
@@ -34,11 +42,13 @@ This folder documents that path in full.
 | [authentication.md](authentication.md) | The three checks, the exact signature algorithm, page 0x90/0x91 |
 | [media-table.md](media-table.md) | The firmware media table: every approved model and its OEM, and whether it can be changed |
 | [mag-firmware.md](mag-firmware.md) | The MINI-MAG controller `.rmf` firmware: format, identity template, clone lead |
-| [compatible-ssds.md](compatible-ssds.md) | What to buy in 2026, the easy path, and the flashing path |
+| [compatible-ssds.md](compatible-ssds.md) | What to buy in 2026, and why a buyable drive needs the camera patch for full rate |
 | [hardware.md](hardware.md) | The connector/adapter board — the one remaining physical task |
 
 ## Status
 
-The authentication scheme is **fully reverse-engineered**. It is **reproduced
-offline** against a genuine magazine. Only hardware remains. You need a small
-adapter board to seat a bare SATA SSD in the mag bay.
+The authentication scheme is **fully reverse-engineered statically** and the
+signature is **reproduced offline** against a genuine magazine. The end-to-end
+hardware path is **not yet tested**: it needs a small adapter board (unbuilt) to
+seat a bare mSATA SSD in the mag bay. A retail drive also needs the `media-any`
+camera patch for full rate unless its IDENTIFY fields happen to match a spec row.

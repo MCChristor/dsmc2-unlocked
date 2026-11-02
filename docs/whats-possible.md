@@ -13,11 +13,15 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
 - **Camera behaviour can be changed.** Features and limits that are gated in
   software can be unlocked. This works both as a lasting change and as a per-boot
   change.
-- **Media authentication is solved.** The check that decides which drive the camera
-  accepts is reverse-engineered. It is reproduced offline against a genuine
-  magazine. So **a compatible SATA SSD can work as a mag** once it reports a
-  whitelisted model string and carries the RED signature. The full detail and the
-  exact conditions are in the [media](../media/) folder.
+- **Media authentication is reverse-engineered.** The scheme is three checks:
+  model-string whitelist, an MD5 SMART-log signature, and a ~29-field ATA IDENTIFY
+  match. All three are reproduced offline against a genuine magazine. A drive
+  mounts once it reports a whitelisted model string and a readable signature page.
+  **Full data rate additionally requires passing the signature and the IDENTIFY
+  match** — a retail drive typically fails the IDENTIFY capability words and caps
+  at ~30 MB/s unless given the `media-any` camera patch. The end-to-end hardware
+  path (adapter board) is not yet tested. Full detail and exact conditions are in
+  the [media](../media/) folder.
 
 ## Bounded by hardware
 

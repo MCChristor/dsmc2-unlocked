@@ -1,8 +1,10 @@
 # Media Adapter Hardware
 
-Only one physical task remains to use a bare SATA SSD as a magazine. You need a
-**connector/adapter board**. The board seats the drive in the mag bay. The board
-routes SATA plus power to the camera's mag connector.
+The one physical task to use a bare SATA SSD as a magazine is a
+**connector/adapter board**. The board seats the drive in the mag bay and routes
+SATA plus power to the camera's mag connector. (On the firmware side, a
+non-genuine drive also needs the `media-any` camera patch for full rate — see
+[compatible-ssds.md](compatible-ssds.md).)
 
 - A genuine MINI-MAG is an **mSATA** module. An **M.2-SATA** module works too
   (M.2-SATA, not M.2 NVMe). An adapter can host either.

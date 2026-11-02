@@ -4,11 +4,13 @@ The camera carries a table of approved recording media. The camera matches the
 model-string whitelist first. The camera then looks the drive up in this table.
 This gives the drive's parameters (capacity, data-rate class) and the **required
 signature type**. The *mount* is gated only by the model string plus a readable
-page 0x90; the camera does not check the controller or the NAND. But **the
-physical capacity is checked** for the full-rate class: `AuthenticateREDMedia`
-compares the drive's reported sector count against the table entry's value, and a
-mismatch throttles the drive to ~30 MB/s (it still mounts). See
-[authentication.md](authentication.md).
+page 0x90; the camera does not check the NAND, and the controller only matters in
+that it must answer page 0x90 and report the IDENTIFY fields checked below. For the
+**full-rate class**, `AuthenticateREDMedia` compares **~29 ATA IDENTIFY fields**
+against the spec row — the sector count is only one of them, and for a retail
+drive the capability/version words usually fail first. Any mismatch throttles to
+~30 MB/s (it still mounts). See [authentication.md](authentication.md) for the
+full field list.
 
 ## Official RED models
 
@@ -39,10 +41,10 @@ for each signature type. Older firmware also knows a wider set of OEM drives
 The table stores each drive's real usable geometry (capacity in 512-byte
 sectors). The values are exact standard SSD sizes:
 
-The entry's sector count is **checked at insert** (not just record-time math), so
-the drive's reported geometry must equal it for full rate:
+The entry's sector count is **checked at insert** (one of the full-rate fields,
+not just record-time math), so the drive's reported geometry must equal it:
 
-| Model group | Sectors (`+0xBC`) | Usable capacity |
+| Model group | Sectors | Usable capacity |
 |---|---|---|
 | 120 GB models | 234,441,648 | 120,034,123,776 B (120 GB) |
 | 240 GB models | 468,862,128 | 240,057,409,536 B (240 GB) |
@@ -50,26 +52,39 @@ the drive's reported geometry must equal it for full rate:
 | 960 GB V1/V2/V3, `PV DXLM1TB V1/V2/V3` | 1,875,385,008 | 960,197,124,096 B (960 GB) |
 | `SAMSUNG MZMTE1T0HMJH-00000` (rows `RED 1TB V1` and `PV DXLM1TB V4`) | 2,000,409,264 | 1,024,209,543,168 B (1 TB, 953.9 GiB) |
 
-The sector count lives at entry offset **`+0xBC`** (a u32). The field at `+0x24` is
-zero in every entry; an earlier revision of this page read `+0x24` and therefore
-listed shifted values.
+These capacities live in the **model-info table** (0xC0-byte entries, built by
+`InitializeMediaInfo`) at entry offset **`+0xBC`** (u32). That is a different
+table from the one `AuthenticateREDMedia` actually compares against: the
+**auth spec table** (0x4e-byte entries, base `0x80f3689c`) stores the checked
+sector count at **`+0x36`** as an **8-byte LBA**, reported as error number 100.
+Both hold the same value; the auth check reads the `+0x36` copy. (An earlier
+revision read `+0x24` — that offset is the expected ATA word 80, not the size.)
 
 Note the marketing vs usable quirk. The **"512GB" MINI-MAG is a 480 GB drive**.
 Media-table entry `RED 512GB V5` is a 480 GB Delkin unit.
 
 The `SAMSUNG MZMTE1T0HMJH-00000` row (`RED 1TB V1`, RED media ID 19, rate class
 200/320) expects **2,000,409,264 sectors** — the PM851's own native 1 TB geometry.
-So a stock PM851 matches the row exactly and **needs no HPA cap**. (An earlier
+So a stock PM851 matches the row's **capacity** exactly and **needs no HPA cap**.
+Note this only clears the sector-count field; a stock PM851 still fails the other
+IDENTIFY capability words in `AuthenticateREDMedia` and throttles to ~30 MB/s
+without the `media-any` patch (see [compatible-ssds.md](compatible-ssds.md)). (An earlier
 revision claimed this row expected 960 GB; that was wrong — 1,875,385,008 belongs
 to the 960 GB rows.)
 
-## The two best clone targets
+## The two easiest model strings to satisfy
+
+These are the easiest strings for the whitelist and signature. They do **not** by
+themselves get a drive to full rate — the IDENTIFY check (gate 3) still applies,
+so a real drive on either string still needs the `media-any` patch (see
+[compatible-ssds.md](compatible-ssds.md)).
 
 - **`RED 512GB V5`** — type 1, and the hash does not include the serial. With a
   zero-WWN drive the signature is a copyable constant (see
   [authentication.md](authentication.md)).
 - **`SAMSUNG MZMTE1T0HMJH-00000`** — a real Samsung PM851 mSATA 1 TB reports this
-  string natively. So no model-string flashing is needed at all.
+  string and the matching capacity natively, so no model-string flashing is needed
+  — but it still fails gate 3 and throttles without the patch.
 
 ## Confirmed real-world device titles
 
@@ -89,7 +104,7 @@ model-string gate matches:
 
 Two things are worth noting:
 
-- `RED 1TB V1` is the media table's **display name** (entry 14), not an ATA model
+- `RED 1TB V1` is the media table's **display name** (array entry 14; RED media ID 19 — two different numbering schemes), not an ATA model
   string: the row's actual model string is `SAMSUNG MZMTE1T0HMJH-00000` and its OEM
   is Samsung. It is the row the camera selects for a 1 TB PM851-class drive, and
   the camera reports it as a 1 TB RED mag.
@@ -113,8 +128,10 @@ the firmware, not from reports.
   signature check, same throttle behaviour.
 
 So the media check is the same on every DSMC2 body. The model string selects the
-media row and speed. The SMART page-0x90 signature sets full speed. A readable
-page 0x90 is required to mount. No body adds a different or deeper media check.
+media row and speed class. Full speed needs **both** a valid page-0x90 signature
+**and** a passing IDENTIFY-field match (gate 3); either failing throttles to
+~30 MB/s. A readable page 0x90 is required to mount. No body adds a different or
+deeper media check.
 
 ## Can the table be changed?
 
