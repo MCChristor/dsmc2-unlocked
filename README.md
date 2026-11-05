@@ -95,3 +95,8 @@ verify the installed image. See [docs/keys.md](docs/keys.md).
 The one thing still in progress is the **custom firmware build itself** — the research
 is complete, but the shippable, verified, recoverable image is not done yet. Do not
 self-patch from these notes in the meantime; wait for the announced build.
+
+## Community & contact
+
+There is a Discord for owners following this work and the upcoming custom firmware. For
+an invite, or any question about the project, reach out: **radosek@pm.me**.
