@@ -33,7 +33,7 @@ same value appears at runtime as `CAMERA_TYPE` in `/env`. The tags seen in the
 | `0x17` | EPIC-W | EPIC-W |
 
 How this value drives identity and what it does *not* change (capability, sensor)
-is covered in [feature-unlock.md](feature-unlock.md).
+is covered in [feature-unlock.md](features/feature-unlock.md).
 
 ## How the camera knows which model it is
 
@@ -55,7 +55,7 @@ resource manifest, and defaults, and can be changed without swapping the binary
 bounded by the sensor (a 5K body has a 5K sensor; no flag makes it 8K) and by the
 per-body hardware-capability flags. The full reasoning, the capability table, and
 the "crossgrade gains are unverified on the device" caveat are in
-[feature-unlock.md](feature-unlock.md); this page owns only the camera-type tag
+[feature-unlock.md](features/feature-unlock.md); this page owns only the camera-type tag
 table above.
 
 ## Per-model data files

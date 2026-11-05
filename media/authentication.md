@@ -416,5 +416,5 @@ report an approved one. So the practical no-host-tool path is:
 Because the camera computes the MD5 from the drive's own WWN, this always produces
 a correct per-drive signature — you do not have to match WWNs by hand.
 
-See the debug shell notes in [docs/serial-shell.md](../docs/serial-shell.md) for
+See the debug shell notes in [docs/serial-shell.md](../docs/access/serial-shell.md) for
 how to reach the service shell.

@@ -7,8 +7,8 @@ at the bottom.
 ## Why it is possible
 
 The application binary is identical across DSMC2 models (model identity is a camera-type
-value plus two config-DB rows, [feature-unlock.md](feature-unlock.md)), and the
-bootloader does not verify the installed application image ([keys.md](keys.md)). So a
+value plus two config-DB rows, [feature-unlock.md](../features/feature-unlock.md)), and the
+bootloader does not verify the installed application image ([keys.md](../firmware/keys.md)). So a
 modified firmware is the stock image plus a controlled set of changes, and it boots on
 any body. The method behind the changes is documented in
 [code-injection.md](code-injection.md).
@@ -18,7 +18,7 @@ any body. The method behind the changes is documented in
 Two flavours over the same base:
 
 - **Production** — stock firmware plus only safe, repair-positive fixes (log-spam fix,
-  the SATA write-retry hardening in [reliability.md](reliability.md)). Behaviour the
+  the SATA write-retry hardening in [reliability.md](../features/reliability.md)). Behaviour the
   owner did not ask for is left alone; the engineering shell commands stay absent, as
   shipped. This is the image meant to actually run a camera.
 - **Dev** — production plus engineering conveniences: the advanced shell commands

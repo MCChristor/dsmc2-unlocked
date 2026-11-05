@@ -1,7 +1,7 @@
 # preset
 
 Build and read RED `.preset` files. Full explanation:
-[docs/keys.md](../../docs/keys.md).
+[docs/keys.md](../../docs/firmware/keys.md).
 
 A `.preset` is a wxSQLite3 AES-256 encrypted SQLite database that writes settings
 (CDB) key/value pairs into the camera when applied — including hidden flags like

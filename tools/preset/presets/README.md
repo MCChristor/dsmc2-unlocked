@@ -16,5 +16,5 @@ python3 ../red_preset.py make my.preset 7 NAME=VALUE [NAME=VALUE ...]
 ```
 
 These are plain configuration — the flags shown above and nothing else. The
-encryption key is public (see [docs/keys.md](../../../docs/keys.md)), so the files
+encryption key is public (see [docs/keys.md](../../../docs/firmware/keys.md)), so the files
 hold no secret.

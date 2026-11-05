@@ -2,7 +2,7 @@
 
 Reverse engineering turns up genuine bugs, not just locks. These are repair-positive
 findings — they explain real failures and will be addressed by the coming custom
-firmware ([builds.md](builds.md)). They are documented here as findings; this is not a
+firmware ([builds.md](../custom-fw/builds.md)). They are documented here as findings; this is not a
 patch-it-yourself page.
 
 ## SATA write has no retry (real, worth fixing)

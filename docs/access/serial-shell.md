@@ -35,15 +35,15 @@ in the one preset.
 ## Route A — preset on a MINI-MAG (the reliable way)
 
 1. Use the ready-made
-   [`enable-shell.preset`](../tools/preset/presets/enable-shell.preset), or build
+   [`enable-shell.preset`](../../tools/preset/presets/enable-shell.preset), or build
    one that sets both flags — `DEBUG_ENABLE_SHELL=1` and
    `COMM_SERIAL_PORT_PROTOCOL=4` (that CDB name is the `SERPROTO` routing gate):
    `python3 tools/preset/red_preset.py make shell.preset 7 DEBUG_ENABLE_SHELL=1 COMM_SERIAL_PORT_PROTOCOL=4`.
-   See [tools/preset/](../tools/preset) and [docs/keys.md](keys.md).
+   See [tools/preset/](../../tools/preset) and [docs/keys.md](../firmware/keys.md).
 2. Copy the preset into **`/force_preset/`** on a MINI-MAG. The camera applies it
    at boot. It auto-deletes each boot, so re-stage it every time.
 3. Boot the camera with the serial bridge connected
-   ([hardware/serial-bridge](../hardware/serial-bridge)). The shell banner
+   ([hardware/serial-bridge](../../hardware/serial-bridge)). The shell banner
    appears a few seconds into boot and the prompt is `(NN%/NN%) dsh>`.
 4. The shell stays interactive. (An earlier belief that it was only open for a
    few seconds was wrong — it was a symptom of the 3.3V MAX3232 transmit problem
@@ -86,7 +86,7 @@ Useful specifics:
 - `maint module` — every attached module with its software and hardware version
   (for pairing and repair).
 - `maint save_log` — writes the decrypted log to a SATA SSD (then decode it per
-  [docs/log-decode.md](log-decode.md), or it is already readable depending on the
+  [docs/log-decode.md](../firmware/log-decode.md), or it is already readable depending on the
   path). This command is not gated.
 - `nand ls` / `nand info` / `nand show-partition-table` — filesystem browsing.
 - `test sata active smartlogpage 0x90` — read a mag's SMART signature page (see

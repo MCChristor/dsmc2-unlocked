@@ -94,4 +94,4 @@ at all, so the client holds it in RAM until complete. Camera-side counters are
 A full pull includes the firmware images for the other processors under
 `/image2/`: `isp/`, `iob0/`, `iob1/`, `lsbfpga/`, `dsp/`, `redpine/`, `lens/`,
 `reardevices/`, `peripherals/`. Which of these are plaintext and which are sealed
-is covered in [peripheral-firmware.md](peripheral-firmware.md).
+is covered in [peripheral-firmware.md](../hardware-fw/peripheral-firmware.md).

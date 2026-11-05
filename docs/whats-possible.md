@@ -1,8 +1,8 @@
 # What Is Possible
 
 This page states what the reverse-engineering enables — the outcomes. The methods,
-keys, and tools behind them are in [docs/keys.md](keys.md),
-[docs/serial-shell.md](serial-shell.md), [docs/log-decode.md](log-decode.md), the
+keys, and tools behind them are in [docs/keys.md](firmware/keys.md),
+[docs/serial-shell.md](access/serial-shell.md), [docs/log-decode.md](firmware/log-decode.md), the
 [tools/](../tools) folder, and the [media](../media/) folder.
 
 ## Confirmed
@@ -56,21 +56,21 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
   through IOB0 and the OMAP display subsystem ([platform.md](platform.md)), so the
   port is a 1080p-class link. To get the camera's 4K picture onto an HDMI display,
   convert its 4K SDI externally — which is exactly what RED's own HDK board does
-  (SDI→HDMI, [peripheral-firmware.md](peripheral-firmware.md)).
+  (SDI→HDMI, [peripheral-firmware.md](hardware-fw/peripheral-firmware.md)).
 
 ## In development — to be announced
 
-A **custom firmware** build is in progress ([builds.md](builds.md)). The platform is
+A **custom firmware** build is in progress ([builds.md](custom-fw/builds.md)). The platform is
 fully understood — package format, bootloader, the whole application, the capability
-system, media, calibration, and the code-injection method ([code-injection.md](code-injection.md))
+system, media, calibration, and the code-injection method ([code-injection.md](custom-fw/code-injection.md))
 are all mapped, so nothing unknown stands in the way. What remains is finishing,
 hardening, and on-camera verification. Planned additions:
 
 - **New anamorphic de-squeeze ratios** beyond the stock set.
 - **In-camera IPP2 on original-DRAGON bodies** (e.g. SCARLET-W) — the colour
-  pipeline gate is one capability bit, not a sensor lock; see [ipp2.md](ipp2.md).
+  pipeline gate is one capability bit, not a sensor lock; see [ipp2.md](features/ipp2.md).
 - **Universal media** — any compatible SATA SSD usable as a mag.
-- **Reliability fixes** — e.g. SATA write-retry ([reliability.md](reliability.md)).
+- **Reliability fixes** — e.g. SATA write-retry ([reliability.md](features/reliability.md)).
 - A **production** image (safe fixes only) and a **dev** image (engineering tools).
 
 These will be **announced here when ready**. Until then, please do **not** attempt to
@@ -81,9 +81,9 @@ build and its procedure will be published when it ships.
 ## Where the details are
 
 Everything above is backed by published material in this repository: the keys and
-what they open ([keys.md](keys.md)), the debug-shell access path
-([serial-shell.md](serial-shell.md)), the package format and decryptor
-([firmware.md](firmware.md), [tools/fw-crypto](../tools/fw-crypto)), the log
-decoder ([log-decode.md](log-decode.md)), the serial bridge
+what they open ([keys.md](firmware/keys.md)), the debug-shell access path
+([serial-shell.md](access/serial-shell.md)), the package format and decryptor
+([firmware.md](firmware/firmware.md), [tools/fw-crypto](../tools/fw-crypto)), the log
+decoder ([log-decode.md](firmware/log-decode.md)), the serial bridge
 ([hardware/serial-bridge](../hardware/serial-bridge)), and the full media path
 ([media](../media/)).

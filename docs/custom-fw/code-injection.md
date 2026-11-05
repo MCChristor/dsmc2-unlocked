@@ -8,8 +8,8 @@ The DSMC2 application is an ARM firmware on a flat-memory real-time OS (ThreadX,
 MMU, no write-protect on code). That combination means a small block of your own
 compiled code, placed in an unused region of the image, can call the firmware's own
 functions directly. This is the method behind "you can produce modified firmware the
-camera accepts" ([whats-possible.md](whats-possible.md)); the bootloader does not
-verify the application image ([keys.md](keys.md)), so a modified image boots.
+camera accepts" ([whats-possible.md](../whats-possible.md)); the bootloader does not
+verify the application image ([keys.md](../firmware/keys.md)), so a modified image boots.
 
 ## Why it works
 
@@ -40,7 +40,7 @@ across bodies (the application binary is identical across DSMC2 models).
 ## What it enables (in the coming build)
 
 - **Reliability and repair fixes** — e.g. the log-spam fix and the SATA write-retry
-  improvement ([reliability.md](reliability.md)).
+  improvement ([reliability.md](../features/reliability.md)).
 - **Reimplementing engineering shell commands** that ship as compile-time stubs, as
   clean C against the current firmware's functions (rather than byte-porting a
   different build, whose internal call targets would all differ).

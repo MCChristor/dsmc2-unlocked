@@ -116,7 +116,7 @@ is `onewire_verify_signature`. Its algorithm, read from the disassembly:
   27 A8 12 4F B3 EA
   ```
   (This is the accessory salt. It is a different constant from the media salt
-  `82 3C 16 F5 4A 9C` in [../media/authentication.md](../media/authentication.md),
+  `82 3C 16 F5 4A 9C` in [../media/authentication.md](../../media/authentication.md),
   though the primitive — MD5 — is the same.)
 - The 16-byte digest is compared against the value stored in the 1-Wire chip.
   The routine returns **0** (no signature present / skipped), **1** (valid), or
@@ -217,7 +217,7 @@ links, not one.
    `7 inch LG MIPI LCD GEO GW3400`, and waits for panel lock via
    `LCDPanel_wait_for_video_sync`). The raster is the monitor-pipe output, which is
    why monitor and HDMI share the 1080p-class ceiling in
-   [whats-possible.md](whats-possible.md).
+   [whats-possible.md](../whats-possible.md).
 2. **Identity — EDID over I2C.** The brain reads the panel's EDID EEPROM to decide
    the monitor **type / sub-type**, and from that the display preset, brightness
    curve, and which touch driver to initialise (`EVF/LCD Port - EDID device not

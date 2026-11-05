@@ -12,14 +12,14 @@ package.
 ## What is identical to DSMC2
 
 - **Firmware container.** MX/Dragon updates are the same `DSMC`-magic **v2**
-  package as DSMC2 single-model updates. See [firmware.md](../firmware.md).
+  package as DSMC2 single-model updates. See [firmware.md](../firmware/firmware.md).
 - **Encryption and keys.** The v2 package uses the same RSA-OAEP(SHA-1, label
   `dsmc`) → RC4 design and opens with the **same published v2 key** — no new key
   material is needed. Verified by unpacking Epic Dragon 6.3.106 with the
-  repository's own [unpacker](../../tools/fw-crypto). See [keys.md](../keys.md).
+  repository's own [unpacker](../../tools/fw-crypto). See [keys.md](../firmware/keys.md).
 - **Config-file cipher.** The `.cfg` files (camera config, lens tables) use the
   same reused-keystream stream cipher, so the same recovered keystream reads DSMC1
-  configs too. See [feature-unlock.md](../feature-unlock.md).
+  configs too. See [feature-unlock.md](../features/feature-unlock.md).
 - **Main processor.** TI OMAP-class ARM running `dsmc_program.mem`, same as DSMC2.
 - **ISP and IOB run Xtensa code, loaded from NAND.** DSMC1's `CAMERA_CONFIG.cfg`
   names the loader paths `TENSILICA_ISP_BIN_PATH` and
@@ -30,9 +30,9 @@ package.
   firmware** — Xtensa runs in both, and the image uses both words.
 
 Because the container, keys, config cipher, shell and subsystem layout all carry
-over, most of this repository — [feature-unlock.md](../feature-unlock.md),
-[serial-shell.md](../serial-shell.md), [shell-commands.md](../shell-commands.md),
-[calibration.md](../calibration.md), [subsystems.md](../subsystems.md) — reads
+over, most of this repository — [feature-unlock.md](../features/feature-unlock.md),
+[serial-shell.md](../access/serial-shell.md), [shell-commands.md](../access/shell-commands.md),
+[calibration.md](../features/calibration.md), [subsystems.md](../features/subsystems.md) — reads
 across to MX/Dragon bodies with the counts adjusted below.
 
 ## Inside the image
@@ -60,7 +60,7 @@ identical (the per-model filename carries the camera-type tag, as on DSMC2).
 ## Camera-type tags
 
 DSMC1 MX/Dragon bodies carry their own camera-type bytes in the same namespace as
-the DSMC2 crossgrade variable (see [feature-unlock.md](../feature-unlock.md)):
+the DSMC2 crossgrade variable (see [feature-unlock.md](../features/feature-unlock.md)):
 
 | Tag | Body |
 |---|---|

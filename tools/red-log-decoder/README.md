@@ -1,7 +1,7 @@
 # red-log-decoder
 
 Decode and triage a DSMC2 camera log. Full explanation:
-[docs/log-decode.md](../../docs/log-decode.md).
+[docs/log-decode.md](../../docs/firmware/log-decode.md).
 
 The camera log is XOR-obfuscated (not encrypted) with a fixed 1024-byte pad —
 no camera, key, or secret needed. The pad is a hardcoded firmware constant,

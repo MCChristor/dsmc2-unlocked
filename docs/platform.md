@@ -18,7 +18,7 @@ facts come from a SCARLET-W 5K on firmware 7.4.1.
   address into an offset inside that file, subtract the base:
   `file_offset = VA − 0x80000000`. The debug shell can read this memory live, and
   the range `0x80000000–0x81FFFFFF` is safe to read; reading unmapped or
-  peripheral addresses faults the processor (see [serial-shell.md](serial-shell.md)).
+  peripheral addresses faults the processor (see [serial-shell.md](access/serial-shell.md)).
 
 ## No secure boot
 
@@ -34,7 +34,7 @@ verified:
 
 Together these mean modified firmware does not need RED's signature to run on an
 owned body. RED's signing key is used only to gate the packaged *upgrade* flow,
-and the camera holds no signing private key. See [keys.md](keys.md).
+and the camera holds no signing private key. See [keys.md](firmware/keys.md).
 
 ## Coprocessors
 
@@ -57,14 +57,14 @@ The ISP/IOB run **Xtensa** code loaded from NAND (config paths `TENSILICA_*_BIN_
 cleanly as Xtensa in Ghidra. Whether the silicon is an **ASIC or an FPGA is not
 determinable from the firmware** (it uses both words); only a physical method would
 settle it. Load map, image layout, per-core function anchoring and the fabric
-evidence are in [peripheral-firmware.md](peripheral-firmware.md).
+evidence are in [peripheral-firmware.md](hardware-fw/peripheral-firmware.md).
 
 Accessories carry their own MCU firmware. The rear modules, HDK, expanders and
 JetPack are **STM32** (confirmed in e.g. `jetpack`, `hdk`, `portx`, `rvxl`, `rvexp`,
 `vmexp`); `rcomPSOC` is a **Cypress PSoC**; lens mounts, the LCD bridge (`gw3400`),
 side handle, FlatUI and EVF each carry an image — see
-[peripheral-firmware.md](peripheral-firmware.md) and
-[accessory-bus.md](accessory-bus.md).
+[peripheral-firmware.md](hardware-fw/peripheral-firmware.md) and
+[accessory-bus.md](hardware-fw/accessory-bus.md).
 
 ## Software components
 
@@ -108,5 +108,5 @@ There are three ways to reach the camera:
   the shell has decompressed with `nand zlib`.
 - **Serial — debug shell.** A low-level interactive shell on the CTRL port, gated
   behind a preset flag. It gives live memory read/write, NAND access, the settings
-  database, and hardware tests. See [serial-shell.md](serial-shell.md). It is the
+  database, and hardware tests. See [serial-shell.md](access/serial-shell.md). It is the
   only interface that reaches the diagnostics needed to repair a dead body.

@@ -56,7 +56,7 @@ menu entry on any sensor.
 This matters because it means the gate is a **software check on the sensor value**,
 not a hardware limit of the de-squeeze itself — de-squeeze is a display-time image
 scale, which any sensor can do. So the ratios are a realistic software-unlock
-target, where a sensor-resolution change (covered in [models.md](models.md)) is
+target, where a sensor-resolution change (covered in [models.md](../models.md)) is
 not.
 
 **One exception.** Camera type `0x15` (the 4.5K body) is the only type whose list
@@ -83,7 +83,7 @@ Three independent changes, in increasing scope:
 3. Both together.
 
 Because there is no MMU and the bootloader does not verify the running image
-([platform.md](platform.md)), such a patch can be applied live with `write reg`
+([platform.md](../platform.md)), such a patch can be applied live with `write reg`
 for testing and only made permanent by writing it into the boot slot.
 
 ## Honest limits
