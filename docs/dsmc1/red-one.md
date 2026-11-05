@@ -102,3 +102,20 @@ the RED-specific debayer and flash routines, and so on), which turns the image i
 a readable PowerPC disassembly rather than an anonymous blob. That is the basis for
 any deeper RED ONE study: the upgrade/validation path, the sensor pipeline, and the
 boot sequence are all reachable by name.
+
+### Software stack
+
+With the symbols applied, the image's architecture is legible:
+
+- **Application:** `SundanceApplication` (the top-level camera app), with
+  subsystems as message-handling modules — `UpgradeModule` is the one that finds,
+  validates and applies `redone.su` (methods `TestForUpgrade`, `Search`,
+  `RunPhase`, `VerifyVersionRollback`, `ApplyUpgradeListener`).
+- **UI is Adobe Flash.** Around 580 symbols belong to an embedded **Flash/SWF
+  player** (`ScriptThread`, `SharedObject`, `CRaster`, `SShapeParser`,
+  `DefineShape`, `FlashString`). The RED ONE interface is drawn by a Flash Lite
+  runtime inside VxWorks — a completely different UI engine from the DSMC1
+  MX/Dragon and DSMC2 bodies.
+- **Crypto:** **OpenSSL 0.9.8a** (11 Oct 2005), which is what performs the
+  RSA-1024 signature check over the `redone.su` payloads.
+
