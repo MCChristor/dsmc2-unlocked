@@ -52,7 +52,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 |---|---|
 | [docs/platform.md](docs/platform.md) | What the DSMC2 is: processor, OS, coprocessors, buses |
 | [docs/models.md](docs/models.md) | The DSMC2 model family and how models differ |
-| [docs/dsmc1.md](docs/dsmc1.md) | DSMC1 (EPIC/SCARLET/Dragon): what carries over from the DSMC2 work |
+| [docs/dsmc1.md](docs/dsmc1.md) | DSMC1, both branches: MX/Dragon (same platform as DSMC2) and RED ONE (PowerPC/VxWorks) |
 | [docs/whats-possible.md](docs/whats-possible.md) | What the research enables (outcomes) |
 | [docs/subsystems.md](docs/subsystems.md) | Per-subsystem map: software lever vs hardware limit |
 | [docs/builds.md](docs/builds.md) | Custom firmware: status, what is coming, and the safety model |
@@ -80,6 +80,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 |---|---|
 | [tools/red-log-decoder/](tools/red-log-decoder) | Decode + triage the camera log (Python, no deps) |
 | [tools/fw-crypto/](tools/fw-crypto) | Decrypt/unpack firmware packages, with the embedded RSA keys |
+| [tools/redone-su/](tools/redone-su) | Unpack RED ONE `redone.su` firmware (PowerPC/VxWorks DSMC1) |
 | [tools/preset/](tools/preset) | Build/read encrypted `.preset` files (sets hidden flags) |
 | [hardware/serial-bridge/](hardware/serial-bridge) | USB↔CTRL RS232 bridge: RP2040 firmware + wiring |
 | [hardware/display-repair/](hardware/display-repair) | Touch LCD panels, digitizers, connectors, thread inserts |
