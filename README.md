@@ -8,6 +8,13 @@ This repository documents *what the platform is*, *what is possible* with it, an
 *how to do it*. It publishes the keys, the methods, the access steps, and working
 tools, so that owners can maintain hardware RED no longer sells.
 
+> **Status (2026-11).** A custom DSMC2 firmware — production and dev images — is **in
+> development**. The platform is fully mapped; what remains is hardening and on-camera
+> verification so the result is safe and recoverable. **Please do not patch or flash your
+> own camera from this material yet** — it is not finished or verified, and an early-boot
+> change applied wrongly can stop a body booting. The build and a clear procedure will be
+> announced here when ready. See [docs/builds.md](docs/builds.md).
+
 > **Context.** This is independent research on hardware the author owns. The goal
 > is repair and preservation. The focus is the **MINI-MAG media**, which RED has
 > discontinued and no longer makes parts for — so there is no RED media product or
@@ -35,6 +42,9 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [docs/dsmc1.md](docs/dsmc1.md) | DSMC1 (EPIC/SCARLET/Dragon): what carries over from the DSMC2 work |
 | [docs/whats-possible.md](docs/whats-possible.md) | What the research enables (outcomes) |
 | [docs/subsystems.md](docs/subsystems.md) | Per-subsystem map: software lever vs hardware limit |
+| [docs/builds.md](docs/builds.md) | Custom firmware: status, what is coming, and the safety model |
+| [docs/code-injection.md](docs/code-injection.md) | The method behind the custom firmware (status page, not a how-to) |
+| [docs/reliability.md](docs/reliability.md) | Reliability findings (SATA write-retry, log spam) |
 | [docs/firmware.md](docs/firmware.md) | Package formats (v2/v3) and how the encryption works |
 | [docs/keys.md](docs/keys.md) | The keys: where they live, how they were recovered, what each opens |
 | [docs/serial-shell.md](docs/serial-shell.md) | Enabling and using the DSMC2 debug shell |
@@ -81,3 +91,7 @@ path, the log decoder, and the serial-bridge hardware. The one thing not present
 is a package **signing** key — the camera holds none, so nobody has it — but
 signing is not required for any of the above, because the bootloader does not
 verify the installed image. See [docs/keys.md](docs/keys.md).
+
+The one thing still in progress is the **custom firmware build itself** — the research
+is complete, but the shippable, verified, recoverable image is not done yet. Do not
+self-patch from these notes in the meantime; wait for the announced build.

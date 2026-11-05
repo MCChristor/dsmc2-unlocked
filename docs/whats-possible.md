@@ -60,17 +60,23 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
 
 ## In development — to be announced
 
-A **custom firmware** build is in progress. The planned additions are:
+A **custom firmware** build is in progress ([builds.md](builds.md)). The platform is
+fully understood — package format, bootloader, the whole application, the capability
+system, media, calibration, and the code-injection method ([code-injection.md](code-injection.md))
+are all mapped, so nothing unknown stands in the way. What remains is finishing,
+hardening, and on-camera verification. Planned additions:
 
 - **New anamorphic de-squeeze ratios** beyond the stock set.
 - **In-camera IPP2 on original-DRAGON bodies** (e.g. SCARLET-W) — the colour
   pipeline gate is one capability bit, not a sensor lock; see [ipp2.md](ipp2.md).
-  Render correctness is pending a hardware shoot-test.
-- **Universal media** — any compatible SATA SSD usable as a mag, with no
-  genuine-media check at all.
+- **Universal media** — any compatible SATA SSD usable as a mag.
+- **Reliability fixes** — e.g. SATA write-retry ([reliability.md](reliability.md)).
+- A **production** image (safe fixes only) and a **dev** image (engineering tools).
 
-These will be **announced later**. This repository will be updated when the build
-ships.
+These will be **announced here when ready**. Until then, please do **not** attempt to
+patch or flash your own camera from this material — the build is not finished or verified,
+and an early-boot change applied wrongly can stop a body booting. The safe, recoverable
+build and its procedure will be published when it ships.
 
 ## Where the details are
 
