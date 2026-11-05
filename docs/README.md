@@ -10,6 +10,7 @@
 - [serial-shell.md](serial-shell.md) — enabling and using the DSMC2 debug shell
 - [log-decode.md](log-decode.md) — decoding the camera's obfuscated log
 - [shell-commands.md](shell-commands.md) — debug-shell command reference
+- [shell-debug-playbook.md](shell-debug-playbook.md) — which shell commands actually work, and how to read the results
 - [feature-unlock.md](feature-unlock.md) — features, capabilities, and model identity
 - [calibration.md](calibration.md) — regenerate, back up, or transplant sensor calibration
 - [extraction.md](extraction.md) — pulling the filesystem and firmware image off the camera

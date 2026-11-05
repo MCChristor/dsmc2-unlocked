@@ -40,6 +40,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [docs/serial-shell.md](docs/serial-shell.md) | Enabling and using the DSMC2 debug shell |
 | [docs/log-decode.md](docs/log-decode.md) | Decoding the camera's obfuscated log |
 | [docs/shell-commands.md](docs/shell-commands.md) | Debug-shell command reference |
+| [docs/shell-debug-playbook.md](docs/shell-debug-playbook.md) | Which shell commands work, and how to read results |
 | [docs/feature-unlock.md](docs/feature-unlock.md) | Features, capabilities, and model identity |
 | [docs/calibration.md](docs/calibration.md) | Regenerate, back up, or transplant sensor calibration |
 | [docs/extraction.md](docs/extraction.md) | Pulling the filesystem and firmware image off the camera |
