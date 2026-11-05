@@ -13,6 +13,16 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
 - **Camera behaviour can be changed.** Features and limits that are gated in
   software can be unlocked. This works both as a lasting change and as a per-boot
   change.
+  - The software-gated features sit behind one capability bitmap (`HW_CAP_*`). The
+    check that loads them from a licence file is a plain PIN string-compare (no
+    cryptographic signature), and the same bits can also be set per-boot from the
+    debug shell or persistently from the unsigned config DB. The genuinely
+    software-only features — ProRes, IPP2 colour science, 3D LUT, anamorphic
+    de-squeeze — flip on this way on any DSMC2 body.
+  - **ProRes is present on every DSMC2.** The encoder is compiled into all builds
+    and runs on the IOB coprocessor; the only gate is the capability bit. It is
+    **4K-capped** by IOB codec throughput — a hardware ceiling, not a flag — so the
+    win is 4K ProRes on any body, not higher.
 - **Media authentication is reverse-engineered.** The scheme is three checks:
   model-string whitelist, an MD5 SMART-log signature, and a ~29-field ATA IDENTIFY
   match. All three are reproduced offline against a genuine magazine. A drive
@@ -30,11 +40,14 @@ keys, and tools behind them are in [docs/keys.md](keys.md),
   the sensor and by per-body hardware-capability flags.
 - **Sensor resolution is fixed hardware.** A 5K body cannot become 8K. The lineup
   uses genuinely different sensors across models.
-- **Some frame-rate and format limits are software gates.** These are *candidate*
-  unlock targets on hardware that already supports them. Which gates actually open
-  was **not verified on the device**. So treat specific feature gains as unproven
-  until tested. Crossgrades only make sense inside one sensor family, and only for
-  the software-gated layer.
+- **Frame rate and resolution are sensor-physical, not software gates.** Traced in
+  firmware: max frame rate = sensor pixel clock (320/250 MHz) ÷ readout timing per
+  format (`tg_getFormatMaximumFramerate`); the headline caps (e.g. 400/200/120) are
+  rails *above* the real per-format limits, not a lock holding back a higher number.
+  Likewise resolution is keyed off the physical 1-wire sensor-module part number, not
+  a flag. So **no software FPS or resolution unlock exists** — a given body does what
+  its sensor allows. Crossgrades only make sense inside one sensor family, and only
+  for the genuinely software-gated layer (capability flags below).
 - **HDMI monitor output tops out at 1080p.** The firmware's display-preset set
   offers only `1080P (HD)` and `720P (HD)` on the brain HDMI port; the only UHD
   display presets are `DISPLAY_PRESET_UHDSDI_*` and the rear `UHDSDI` channel —

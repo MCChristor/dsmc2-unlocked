@@ -34,12 +34,14 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [docs/models.md](docs/models.md) | The DSMC2 model family and how models differ |
 | [docs/dsmc1.md](docs/dsmc1.md) | DSMC1 (EPIC/SCARLET/Dragon): what carries over from the DSMC2 work |
 | [docs/whats-possible.md](docs/whats-possible.md) | What the research enables (outcomes) |
+| [docs/subsystems.md](docs/subsystems.md) | Per-subsystem map: software lever vs hardware limit |
 | [docs/firmware.md](docs/firmware.md) | Package formats (v2/v3) and how the encryption works |
 | [docs/keys.md](docs/keys.md) | The keys: where they live, how they were recovered, what each opens |
 | [docs/serial-shell.md](docs/serial-shell.md) | Enabling and using the DSMC2 debug shell |
 | [docs/log-decode.md](docs/log-decode.md) | Decoding the camera's obfuscated log |
 | [docs/shell-commands.md](docs/shell-commands.md) | Debug-shell command reference |
 | [docs/feature-unlock.md](docs/feature-unlock.md) | Features, capabilities, and model identity |
+| [docs/calibration.md](docs/calibration.md) | Regenerate, back up, or transplant sensor calibration |
 | [docs/extraction.md](docs/extraction.md) | Pulling the filesystem and firmware image off the camera |
 | [docs/peripheral-firmware.md](docs/peripheral-firmware.md) | Coprocessor and accessory firmware images |
 | [docs/accessory-bus.md](docs/accessory-bus.md) | The accessory bus: module enumeration, identity, why nothing is crypto-locked |
