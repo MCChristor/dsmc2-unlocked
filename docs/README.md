@@ -5,6 +5,9 @@
 - [dsmc1.md](dsmc1.md) — DSMC1 (EPIC/SCARLET/Dragon): what carries over from the DSMC2 work
 - [whats-possible.md](whats-possible.md) — what the research enables (outcomes)
 - [subsystems.md](subsystems.md) — per-subsystem map: software lever vs hardware limit
+- [builds.md](builds.md) — custom firmware: status, what is coming, and the safety model
+- [code-injection.md](code-injection.md) — the method behind the custom firmware (status page, not a how-to)
+- [reliability.md](reliability.md) — reliability findings (SATA write-retry, log spam)
 - [firmware.md](firmware.md) — package formats (v2/v3) and how the encryption works
 - [keys.md](keys.md) — the keys: where they live, how they were recovered, what each opens
 - [serial-shell.md](serial-shell.md) — enabling and using the DSMC2 debug shell
