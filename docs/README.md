@@ -2,7 +2,7 @@
 
 - [platform.md](platform.md) — SoC, OS, coprocessors, buses
 - [models.md](models.md) — the DSMC2 model family and how models differ
-- [dsmc1.md](dsmc1.md) — DSMC1 (EPIC/SCARLET/Dragon): what carries over from the DSMC2 work
+- [dsmc1/](dsmc1/) — DSMC1, both branches: MX/Dragon (same platform as DSMC2) and RED ONE (PowerPC/VxWorks)
 - [whats-possible.md](whats-possible.md) — what the research enables (outcomes)
 - [subsystems.md](subsystems.md) — per-subsystem map: software lever vs hardware limit
 - [builds.md](builds.md) — custom firmware: status, what is coming, and the safety model

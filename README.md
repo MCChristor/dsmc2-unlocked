@@ -52,7 +52,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 |---|---|
 | [docs/platform.md](docs/platform.md) | What the DSMC2 is: processor, OS, coprocessors, buses |
 | [docs/models.md](docs/models.md) | The DSMC2 model family and how models differ |
-| [docs/dsmc1.md](docs/dsmc1.md) | DSMC1, both branches: MX/Dragon (same platform as DSMC2) and RED ONE (PowerPC/VxWorks) |
+| [docs/dsmc1/](docs/dsmc1/) | DSMC1, both branches: MX/Dragon (same platform as DSMC2) and RED ONE (PowerPC/VxWorks) |
 | [docs/whats-possible.md](docs/whats-possible.md) | What the research enables (outcomes) |
 | [docs/subsystems.md](docs/subsystems.md) | Per-subsystem map: software lever vs hardware limit |
 | [docs/builds.md](docs/builds.md) | Custom firmware: status, what is coming, and the safety model |
