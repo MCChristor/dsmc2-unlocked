@@ -5,9 +5,10 @@ facts come from a SCARLET-W 5K on firmware 7.4.1.
 
 ## Main processor and OS
 
-- **Application processor:** a TI OMAP-class ARM (Cortex-A8-class; the OMAP family
-  is identified from the firmware, the exact core is inferred). It is 32-bit. It uses
-  one flat address space with **no memory protection (no MMU)**.
+- **Application processor:** a **TI DM3725** (Cortex-A8, 1 GHz, 45nm) — confirmed from the
+  chip's top marking (`DM3725CBP100`). It is in the OMAP3630 / DM37xx family (a DM3730 without
+  the SGX graphics core, which this camera does not use — it has its own image coprocessors).
+  32-bit, one flat address space with **no memory protection (no MMU)**.
 - **Operating system:** ThreadX (Express Logic). This real-time OS is now open
   source. The build uses the Green Hills compiler.
 - **Result of the flat memory:** there is no process isolation. Any code that runs
