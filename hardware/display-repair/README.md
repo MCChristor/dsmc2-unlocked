@@ -14,9 +14,15 @@ ordering.
   effectively impossible to source.
   - **`EP0700M06` and `EP0700M12` will not work** as drop-in replacements: they
     use a **different touch controller/driver and a different pin-out**.
-  - A substitution may still be possible later with a **custom flex harness** that
-    re-maps the pins, since the difference is the connector/driver interface rather
-    than the glass size. Untested; noted as a direction, not a solution.
+  - A substitution is possible with a **custom flex harness** re-mapping the pins
+    (the difference is the connector/driver interface, not the glass size) **plus a
+    firmware side**: the camera reads a panel-ID getter to decide the panel type, and
+    forcing it to report the 7-inch panel (a two-instruction patch, applied post-shell
+    at runtime) makes the camera drive a replacement EDT EP0700M06/M12 at the panel's
+    native 1024×600. Touch degrades gracefully if the digitizer differs. The one thing
+    to verify on the bench is the LVDS timing preset for the specific panel. This also
+    recovers a stock panel whose **touch digitizer is dead** — video keeps working.
+    Harness wiring still untested; the firmware path is traced.
 - **Side-button connector board: `DF40C-10DS-0.4V(51)`** (Hirose DF40 series,
   10-pin, 0.4 mm pitch). This connector is fragile. After reseating, secure it (UV
   resin or hot-glue) so it does not work loose again.
