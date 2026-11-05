@@ -15,6 +15,19 @@ tools, so that owners can maintain hardware RED no longer sells.
 > change applied wrongly can stop a body booting. The build and a clear procedure will be
 > announced here when ready. See [docs/builds.md](docs/builds.md).
 
+## Roadmap & status
+
+- **Done** — the platform is fully reverse-engineered: firmware packaging + decryption,
+  the bootloader, the whole application, the capability system, media authentication,
+  calibration, and the code-injection method. All documented here.
+- **In progress** — a custom firmware in two flavours: a **production** image (safe,
+  repair-positive fixes only) and a **dev** image (engineering tools). See
+  [docs/builds.md](docs/builds.md) and [docs/whats-possible.md](docs/whats-possible.md).
+- **Not yet** — do not self-patch from this material; the safe, recoverable build and its
+  procedure are still being finished and verified on hardware.
+- **Follow it** — a Discord tracks this work and the build's release; for an invite or any
+  question, email **radosek@pm.me** (see [Community & contact](#community--contact)).
+
 > **Context.** This is independent research on hardware the author owns. The goal
 > is repair and preservation. The focus is the **MINI-MAG media**, which RED has
 > discontinued and no longer makes parts for — so there is no RED media product or
