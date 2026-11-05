@@ -55,3 +55,50 @@ payloads; the **signing** key is not published and is not in the firmware, so th
 is read/study access, not a path to repacking a signed `redone.su`. For
 preservation that is enough: you can decrypt, inspect and archive both the VxWorks
 image and the FPGA bitstream from any build you hold.
+
+## Inside the firmware (from the decrypted build 16 image)
+
+Unpacking `redone.su` gives two blobs; both have now been read far enough to
+describe the platform.
+
+### The processor is inside the FPGA
+
+The VxWorks image is **VxWorks 6.4** for **PowerPC 405**, built from a Xilinx EDK
+board-support package (`bsp_ppc405_0_revB`, with Xilinx soft-peripheral drivers
+`xdma_channel`, `xemaclite`, `xiic`, …). The FPGA bitstream's JTAG IDCODE is
+`0x01EE4093`, which is a **Xilinx Virtex-4 XC4VFX100**.
+
+The Virtex-4 **FX** family carries one or two **hard PowerPC 405 cores inside the
+FPGA fabric**. So RED ONE's "PPC405 + IOFPGA" is not two chips — the CPU is the
+hard core *inside* the XC4VFX100, and the rest of the I/O and sensor logic is
+soft logic in the same part. RED ONE is effectively a one-FPGA system-on-chip.
+
+### Resolution and frame-rate are sensor-bound, not soft-gated
+
+The VxWorks image embeds the camera's full UI/mode matrix as XML. The
+resolution → frame-rate table reads:
+
+| Resolution (and 2:1 / 1.2:1 ANA variants) | Frame rates offered |
+|---|---|
+| **4K** | 23.98, 24, 25, 29.97 |
+| **3K** | 23.98, 24, 25, 29.97, 50, 59.94 |
+| **2K** | 23.98, 24, 25, 29.97, 50, 59.94 — and a 1–120 series at 2:1 |
+
+The ceiling rises as resolution drops — the signature of a **sensor-readout
+limit**, exactly as on DSMC2 (where the same shape proved 6K was physically
+impossible on a 5K sensor). There is no soft frame-rate gate hidden above these
+rails to unlock; the numbers are what the sensor and the Virtex-4 pipeline can
+clock out. The matrix also exposes the codec choice (`J2K`), anamorphic de-squeeze
+modes, and the over-temperature / bad-frame-rate states.
+
+This is read/study detail for preservation; it is not a modification path.
+
+### The VxWorks image disassembles with full symbols
+
+The VxWorks image keeps its **application symbol table** — a 20-byte-record array
+naming the firmware's own functions. Parsing it recovers about **13,000 function
+names** (`usrRoot`, `taskSpawn`, `netTask`, the `sysBootLine`/`sysNvRam` boot code,
+the RED-specific debayer and flash routines, and so on), which turns the image into
+a readable PowerPC disassembly rather than an anonymous blob. That is the basis for
+any deeper RED ONE study: the upgrade/validation path, the sensor pipeline, and the
+boot sequence are all reachable by name.
