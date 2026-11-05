@@ -46,7 +46,7 @@ were the ones who encrypted it.
 
 Once we stopped double-processing the data, a multi-model package opened fully. The
 firmware we unpacked offline is **byte-for-byte the same** as the image on the
-camera. See [firmware.md](firmware.md) for the real structure.
+camera. See [firmware.md](firmware/firmware.md) for the real structure.
 
 **Lesson.** Randomness cuts both ways. Random output can mean "still encrypted," but
 it can also mean "you just encrypted plain data by mistake." Before you hunt a

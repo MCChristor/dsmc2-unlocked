@@ -13,7 +13,7 @@ tools, so that owners can maintain hardware RED no longer sells.
 > verification so the result is safe and recoverable. **Please do not patch or flash your
 > own camera from this material yet** — it is not finished or verified, and an early-boot
 > change applied wrongly can stop a body booting. The build and a clear procedure will be
-> announced here when ready. See [docs/builds.md](docs/builds.md).
+> announced here when ready. See [docs/custom-fw/builds.md](docs/custom-fw/builds.md).
 
 ## Roadmap & status
 
@@ -22,7 +22,7 @@ tools, so that owners can maintain hardware RED no longer sells.
   calibration, and the code-injection method. All documented here.
 - **In progress** — a custom firmware in two flavours: a **production** image (safe,
   repair-positive fixes only) and a **dev** image (engineering tools). See
-  [docs/builds.md](docs/builds.md) and [docs/whats-possible.md](docs/whats-possible.md).
+  [docs/custom-fw/builds.md](docs/custom-fw/builds.md) and [docs/whats-possible.md](docs/whats-possible.md).
 - **Not yet** — do not self-patch from this material; the safe, recoverable build and its
   procedure are still being finished and verified on hardware.
 - **Follow it** — a Discord tracks this work and the build's release; for an invite or any
@@ -54,23 +54,23 @@ tools, so that owners can maintain hardware RED no longer sells.
 | [docs/models.md](docs/models.md) | The DSMC2 model family and how models differ |
 | [docs/dsmc1/](docs/dsmc1/) | DSMC1, both branches: MX/Dragon (same platform as DSMC2) and RED ONE (PowerPC/VxWorks) |
 | [docs/whats-possible.md](docs/whats-possible.md) | What the research enables (outcomes) |
-| [docs/subsystems.md](docs/subsystems.md) | Per-subsystem map: software lever vs hardware limit |
-| [docs/builds.md](docs/builds.md) | Custom firmware: status, what is coming, and the safety model |
-| [docs/code-injection.md](docs/code-injection.md) | The method behind the custom firmware (status page, not a how-to) |
-| [docs/reliability.md](docs/reliability.md) | Reliability findings (SATA write-retry, log spam) |
-| [docs/firmware.md](docs/firmware.md) | Package formats (v2/v3) and how the encryption works |
-| [docs/keys.md](docs/keys.md) | The keys: where they live, how they were recovered, what each opens |
-| [docs/serial-shell.md](docs/serial-shell.md) | Enabling and using the DSMC2 debug shell |
-| [docs/log-decode.md](docs/log-decode.md) | Decoding the camera's obfuscated log |
-| [docs/shell-commands.md](docs/shell-commands.md) | Debug-shell command reference |
-| [docs/shell-debug-playbook.md](docs/shell-debug-playbook.md) | Which shell commands work, and how to read results |
-| [docs/feature-unlock.md](docs/feature-unlock.md) | Features, capabilities, and model identity |
-| [docs/calibration.md](docs/calibration.md) | Regenerate, back up, or transplant sensor calibration |
-| [docs/extraction.md](docs/extraction.md) | Pulling the filesystem and firmware image off the camera |
-| [docs/peripheral-firmware.md](docs/peripheral-firmware.md) | Coprocessor and accessory firmware images |
-| [docs/accessory-bus.md](docs/accessory-bus.md) | The accessory bus: module enumeration, identity, why nothing is crypto-locked |
-| [docs/anamorphic.md](docs/anamorphic.md) | Anamorphic de-squeeze ratios, measured per sensor |
-| [docs/ipp2.md](docs/ipp2.md) | In-camera IPP2 on a Dragon-5K body: one capability bit, not a sensor lock |
+| [docs/features/subsystems.md](docs/features/subsystems.md) | Per-subsystem map: software lever vs hardware limit |
+| [docs/custom-fw/builds.md](docs/custom-fw/builds.md) | Custom firmware: status, what is coming, and the safety model |
+| [docs/custom-fw/code-injection.md](docs/custom-fw/code-injection.md) | The method behind the custom firmware (status page, not a how-to) |
+| [docs/features/reliability.md](docs/features/reliability.md) | Reliability findings (SATA write-retry, log spam) |
+| [docs/firmware/firmware.md](docs/firmware/firmware.md) | Package formats (v2/v3) and how the encryption works |
+| [docs/firmware/keys.md](docs/firmware/keys.md) | The keys: where they live, how they were recovered, what each opens |
+| [docs/access/serial-shell.md](docs/access/serial-shell.md) | Enabling and using the DSMC2 debug shell |
+| [docs/firmware/log-decode.md](docs/firmware/log-decode.md) | Decoding the camera's obfuscated log |
+| [docs/access/shell-commands.md](docs/access/shell-commands.md) | Debug-shell command reference |
+| [docs/access/shell-debug-playbook.md](docs/access/shell-debug-playbook.md) | Which shell commands work, and how to read results |
+| [docs/features/feature-unlock.md](docs/features/feature-unlock.md) | Features, capabilities, and model identity |
+| [docs/features/calibration.md](docs/features/calibration.md) | Regenerate, back up, or transplant sensor calibration |
+| [docs/firmware/extraction.md](docs/firmware/extraction.md) | Pulling the filesystem and firmware image off the camera |
+| [docs/hardware-fw/peripheral-firmware.md](docs/hardware-fw/peripheral-firmware.md) | Coprocessor and accessory firmware images |
+| [docs/hardware-fw/accessory-bus.md](docs/hardware-fw/accessory-bus.md) | The accessory bus: module enumeration, identity, why nothing is crypto-locked |
+| [docs/features/anamorphic.md](docs/features/anamorphic.md) | Anamorphic de-squeeze ratios, measured per sensor |
+| [docs/features/ipp2.md](docs/features/ipp2.md) | In-camera IPP2 on a Dragon-5K body: one capability bit, not a sensor lock |
 | [docs/research-notes.md](docs/research-notes.md) | Difficulties, insights, and the research story |
 | [media/](media/) | MINI-MAG and compatible SSDs |
 
@@ -104,7 +104,7 @@ decryption keys and unpacker, the preset key and tooling, the serial-shell acces
 path, the log decoder, and the serial-bridge hardware. The one thing not present
 is a package **signing** key — the camera holds none, so nobody has it — but
 signing is not required for any of the above, because the bootloader does not
-verify the installed image. See [docs/keys.md](docs/keys.md).
+verify the installed image. See [docs/firmware/keys.md](docs/firmware/keys.md).
 
 The one thing still in progress is the **custom firmware build itself** — the research
 is complete, but the shippable, verified, recoverable image is not done yet. Do not

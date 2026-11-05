@@ -108,7 +108,7 @@ maint save_log                     # write the decrypted log to a SATA SSD (unga
 maint print_boot_log
 ```
 
-`maint save_log` plus the [log decoder](log-decode.md) is the clean way to get a
+`maint save_log` plus the [log decoder](../firmware/log-decode.md) is the clean way to get a
 readable boot log. `maint module` is the tool for module pairing and repair.
 
 ### `test` — hardware diagnostics
@@ -128,4 +128,4 @@ boot path.
 Most `debug` subcommands are omitted from `help` but exist in the command table.
 They back the `DEBUG_*` CDB parameters, for example `debug hw_cap` (dump/set the
 capability table), `debug log_to_shell`, `debug mfg_features_enabled`. See
-[feature-unlock.md](feature-unlock.md).
+[feature-unlock.md](../features/feature-unlock.md).

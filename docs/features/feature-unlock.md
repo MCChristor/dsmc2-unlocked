@@ -2,7 +2,7 @@
 
 This page explains what separates one DSMC2 model from another, what can be
 changed in software, and what is fixed by the hardware. It is the "why" behind the
-crossgrade and feature-unlock claims in [whats-possible.md](whats-possible.md).
+crossgrade and feature-unlock claims in [whats-possible.md](../whats-possible.md).
 
 ## Model identity is configuration
 
@@ -20,7 +20,7 @@ What differs is small configuration:
 So "which model the camera thinks it is" is just data. Changing it is possible.
 But — see below — that does not grant another model's capabilities. The full
 camera-type tag table (which tag maps to which factory type and camera ID) is in
-[models.md](models.md#camera-type-tags).
+[models.md](../models.md#camera-type-tags).
 
 ## Capability is not only configuration
 
@@ -67,7 +67,7 @@ was not all verified on the device (see the status note at the end of this page)
   and watching for boom/rig intrusions. Pure display feature (the look-around bit,
   see [anamorphic.md](anamorphic.md)).
 - **ProRes recording** — record Apple ProRes alongside or instead of R3D. The
-  encoder is present in the firmware ([platform.md](platform.md)); the gate is a
+  encoder is present in the firmware ([platform.md](../platform.md)); the gate is a
   capability flag, not the codec's absence.
 - **Anamorphic ratios** — desqueeze preview for anamorphic lenses. The stock ratio
   set is enumerated in a format table; added ratios need a table edit, not only a
@@ -80,7 +80,7 @@ was not all verified on the device (see the status note at the end of this page)
   entries the UI presents. A higher-tier manifest lists more, but only **up to the
   sensor's physical readout ceiling**, which is computed from sensor timing and is
   identical silicon-to-silicon. This exposes offerings; it does not raise the
-  hardware limit ([whats-possible.md](whats-possible.md)).
+  hardware limit ([whats-possible.md](../whats-possible.md)).
 
 **Why a SCARLET-W does not show them.** The application binary and bootloader are
 identical across models in a build; what differs is the camera-type value, a couple
@@ -110,7 +110,7 @@ set capability and debug flags the menus hide. Two categories exist:
 
 From the debug shell you can also read the whole table live with `debug hw_cap`
 and set an index with `debug hw_cap <index> 1`. See
-[serial-shell.md](serial-shell.md) and [tools/preset](../tools/preset) for how to
+[serial-shell.md](../access/serial-shell.md) and [tools/preset](../../tools/preset) for how to
 set them persistently.
 
 > **One capability is special:** index `111`,
@@ -119,7 +119,7 @@ set them persistently.
 > key. It is the mechanism behind engineering-signed upgrades. We hold neither
 > signing key, so this is noted for completeness, not as a lever — and it does not
 > matter, because the bootloader does not verify the installed image at all
-> ([platform.md](platform.md), [keys.md](keys.md)).
+> ([platform.md](../platform.md), [keys.md](../firmware/keys.md)).
 
 ## The licence system
 
@@ -137,7 +137,7 @@ Two things follow from what is in the firmware image:
 
 - **The camera holds private keys.** Several RSA private keys are embedded in the
   image (the generic key/asset keys, separate from the two firmware-package keys in
-  [keys.md](keys.md)). Because a private key gives its public half, the material to
+  [keys.md](../firmware/keys.md)). Because a private key gives its public half, the material to
   *produce* a container the camera will open and trust is on the device.
 - **So the licence format is forgeable in principle** — the gate is not a secret
   RED holds alone. What is not yet pinned down is which of the embedded keys a

@@ -3,7 +3,7 @@
 This document explains how RED packages and protects DSMC2 firmware — the formats,
 the encryption design, which algorithms are used, and how the parts fit together.
 The keys and their locations are in [keys.md](keys.md), and a working unpacker is
-in [tools/fw-crypto](../tools/fw-crypto).
+in [tools/fw-crypto](../../tools/fw-crypto).
 ## Two package formats: v2 and v3
 
 A firmware update file is a container. There are two container formats. They are
@@ -20,7 +20,7 @@ file sets which format it is. The camera accepts both.
 ## A v3 combo is a pack of v2 packages
 
 This is the key fact, and it was easy to get wrong at first. See
-[research-notes.md](research-notes.md).
+[research-notes.md](../research-notes.md).
 
 A v3 combo has a small encrypted header and table of contents. The table is a
 count, then one entry per model. Each entry gives a model type and the position of
@@ -31,12 +31,12 @@ inside the combo. The combo does not add a second layer over them. At install ti
 the camera reads the table, finds the entry for its own model type, and uses that
 one v2 package.
 
-This is the packaging side of a fact in [models.md](models.md): model identity is a
+This is the packaging side of a fact in [models.md](../models.md): model identity is a
 small piece of data. One file holds every model. One value picks the model.
 
 The same v2 format and the same key also cover the **earlier DSMC1 generation**:
 Epic Dragon 6.3.106 is a v2 package that unpacks with the published key and tool,
-unchanged. See [dsmc1.md](dsmc1.md).
+unchanged. See [dsmc1.md](../dsmc1/).
 
 ## How a v2 package is protected
 

@@ -33,11 +33,11 @@ aes256:ABk530WAcrRbvaoKAjc3qoD9BGAhiotq
 - **Where it came from.** It was read out of a RED desktop application and then
   **proven by a full round-trip**: a genuine RED-authored preset decrypts to a
   valid SQLite database with this key, and a preset built with it re-reads
-  correctly. See [tools/preset/](../tools/preset).
+  correctly. See [tools/preset/](../../tools/preset).
 - **What it unlocks.** A preset writes key/value pairs into the camera's settings
   database (CDB) when applied. That includes flags the menus hide — most usefully
   `DEBUG_ENABLE_SHELL` (the shell enable gate) and the serial-protocol routing.
-  See [docs/serial-shell.md](serial-shell.md).
+  See [docs/serial-shell.md](../access/serial-shell.md).
 
 ### The preset file format (under the encryption)
 
@@ -51,7 +51,7 @@ parameters(name UNIQUE, value)      -- CDB key/value pairs applied on upgrade/bo
 
 ### Making and reading presets
 
-[tools/preset/red_preset.py](../tools/preset/red_preset.py) builds and reads
+[tools/preset/red_preset.py](../../tools/preset/red_preset.py) builds and reads
 presets. It reproduces the wxSQLite3 AES-256 codec directly — **no RED
 application, and any OS** with Python and pycryptodome.
 
@@ -64,7 +64,7 @@ The codec: the AES-256 key is the ASCII key bytes repeated to 32 bytes; pages ar
 1024 bytes with 12 reserved bytes holding a per-page nonce; the keystream is a
 chained AES run over `page-number ‖ nonce`, with a small header fixup on page 1.
 It was recovered from a genuine plaintext/ciphertext pair and verified both ways.
-Ready-made presets are in [tools/preset/presets/](../tools/preset/presets).
+Ready-made presets are in [tools/preset/presets/](../../tools/preset/presets).
 
 ## 2. The firmware-package decryption keys (RSA) — published, verified
 
@@ -73,8 +73,8 @@ matching RSA **private** key for each is embedded in the firmware:
 
 | package magic | key | virtual address | file |
 |---|---|---|---|
-| `DSMC\x02` | `fw_v2` private key | `0x80f60f84` | [`tools/fw-crypto/fw_v2_privkey.der`](../tools/fw-crypto/fw_v2_privkey.der) |
-| `DSMC\x03` | `fw_v3` private key | `0x80f6164c` | [`tools/fw-crypto/fw_v3_privkey.der`](../tools/fw-crypto/fw_v3_privkey.der) |
+| `DSMC\x02` | `fw_v2` private key | `0x80f60f84` | [`tools/fw-crypto/fw_v2_privkey.der`](../../tools/fw-crypto/fw_v2_privkey.der) |
+| `DSMC\x03` | `fw_v3` private key | `0x80f6164c` | [`tools/fw-crypto/fw_v3_privkey.der`](../../tools/fw-crypto/fw_v3_privkey.der) |
 
 These keys are used by the camera for **decryption only** (unwrapping the key that
 protects a package). They are not signing keys.
@@ -108,7 +108,7 @@ every file that goes onto the camera, including the bootloader and the 21.6 MB
 application image.
 
 The same two keys also open **DSMC1** packages — the generation shares the
-format. Verified against Epic Dragon 6.3.106; see [dsmc1.md](dsmc1.md).
+format. Verified against Epic Dragon 6.3.106; see [dsmc1.md](../dsmc1/).
 
 ```
 python3 tools/fw-crypto/unpack_combo.py <combo.bin> --list
@@ -116,7 +116,7 @@ python3 tools/fw-crypto/unpack_combo.py <combo.bin> --extract 0x16 --out DIR   #
 python3 tools/fw-crypto/unpack_combo.py <v2_package.bin> --extract --out DIR
 ```
 
-Model tag `0x16` is SCARLET-W; see [docs/models.md](models.md) for the full list.
+Model tag `0x16` is SCARLET-W; see [docs/models.md](../models.md) for the full list.
 
 ## 3. The signing keys — NOT in our hands (and why that is fine)
 
@@ -135,7 +135,7 @@ on the camera.
 
 This does not block repair or preservation, for one concrete reason: the
 **bootloader does not verify the installed OS image** (the mechanism is in
-[platform.md](platform.md)) — a patched image written into the boot slot runs.
+[platform.md](../platform.md)) — a patched image written into the boot slot runs.
 Signing matters only for the packaged *upgrade* flow, and that flow is not the
 only way onto the device.
 
@@ -166,7 +166,7 @@ This is a different constant from the media salt `82 3C 16 F5 4A 9C`, but the sa
 primitive. Unlike the media signature, the accessory signature is **not a gate**:
 a missing or mismatched value is only logged, never enforced. The full
 enumeration handshake and what is and isn't checked are in
-[accessory-bus.md](accessory-bus.md).
+[accessory-bus.md](../hardware-fw/accessory-bus.md).
 
 ## What is actually encrypted, and with what
 
@@ -180,7 +180,7 @@ A map of the whole platform, from reading the crypto call sites:
 | presets | AES-256, universal key | **yes** — key above |
 | settings DB / environment / calibration | checksums/MD5, not signatures | integrity only, trivially matched |
 | media (MINI-MAG) | model whitelist + MD5 SMART signature | **yes** — see the media folder |
-| accessory modules (bus) | base64 descriptor + MD5 1-Wire signature | **yes** — not gating; see [accessory-bus.md](accessory-bus.md) |
+| accessory modules (bus) | base64 descriptor + MD5 1-Wire signature | **yes** — not gating; see [accessory-bus.md](../hardware-fw/accessory-bus.md) |
 
 The pattern is deliberate: strong asymmetric crypto only where RED and the camera
 must agree (packages, licences), and cheap checksums everywhere the camera only

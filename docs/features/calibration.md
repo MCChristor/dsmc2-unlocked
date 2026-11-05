@@ -39,5 +39,5 @@ work.
 
 ---
 Commands and the calibration store live behind the debug shell
-([serial-shell.md](serial-shell.md)). Exact addresses are kept in the private research
+([serial-shell.md](../access/serial-shell.md)). Exact addresses are kept in the private research
 notes; this page is the operator-level summary.

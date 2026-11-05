@@ -90,5 +90,5 @@ camera faults.
   (menu: Settings → Setup → Communication → Serial → Ctrl Protocol). Then speak
   RCP over the USB serial port. See the RCP SDK from RED for the protocol.
 - **Debug shell:** the shell is serial-only (WiFi cannot reach it). See
-  [docs/serial-shell.md](../../docs/serial-shell.md) for how to enable and reach
+  [docs/serial-shell.md](../../docs/access/serial-shell.md) for how to enable and reach
   it.

@@ -19,7 +19,7 @@ to repair and preserve it. Corrections and new data points are welcome.
 - **Anything from hardware you don't own.** This work is on the author's own
   cameras. Keep it that way.
 - **RED's package signing private key.** Nobody has it (the camera holds none),
-  and this project does not need it — see [docs/keys.md](docs/keys.md).
+  and this project does not need it — see [docs/keys.md](docs/firmware/keys.md).
 
 ## Why this exists
 RED stopped selling DSMC2 bodies in 2022 and has discontinued the MINI-MAG media

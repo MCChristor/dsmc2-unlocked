@@ -1,7 +1,7 @@
 # fw-crypto
 
 Decrypt and unpack RED DSMC2 firmware packages. Full explanation:
-[docs/keys.md](../../docs/keys.md) and [docs/firmware.md](../../docs/firmware.md).
+[docs/keys.md](../../docs/firmware/keys.md) and [docs/firmware.md](../../docs/firmware/firmware.md).
 
 A firmware `.bin` is an RSA-OAEP-wrapped RC4 package. The two RSA **decryption**
 private keys are embedded in the firmware and are included here as `.der` files.
@@ -28,5 +28,5 @@ Files:
 - `fw_v3_privkey.der` — RSA private key for `DSMC\x03` packages (firmware VA `0x80f6164c`).
 
 These are **decryption** keys, not signing keys. They open packages; they cannot
-forge a RED-signed one. See [docs/keys.md](../../docs/keys.md) for why that does
+forge a RED-signed one. See [docs/keys.md](../../docs/firmware/keys.md) for why that does
 not block repair.

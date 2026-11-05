@@ -26,7 +26,7 @@ PRNG, and no dependence on the serial number.
 So there are two ways to decode, and you do not need the camera for either:
 
 1. **With the pad (exact).** The pad is published here as
-   [`log_xor_table.bin`](../tools/red-log-decoder/log_xor_table.bin) (1024 bytes).
+   [`log_xor_table.bin`](../../tools/red-log-decoder/log_xor_table.bin) (1024 bytes).
    XOR the file against it. Works on any length, including a short log.
 2. **Recovered from the file (no pad file).** The file is a series of **512-byte
    records**; the 1024-byte pad shows up as two alternating 512-byte halves

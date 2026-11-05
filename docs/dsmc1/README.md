@@ -34,6 +34,6 @@ Unsure from the outside? Check the firmware file the body accepts: a `DSMC`-magi
 Both DSMC1 branches are on RED's no-longer-repairable list, which is the reason
 their firmware is documented here for preservation. MX/Dragon is covered by the
 whole repository (same platform as DSMC2); RED ONE is covered for firmware
-unpacking and study. The custom-firmware work in [builds.md](../builds.md) targets
+unpacking and study. The custom-firmware work in [builds.md](../custom-fw/builds.md) targets
 **DSMC2**; it is not built or verified for DSMC1 bodies — do not apply DSMC2 build
 material to a DSMC1 camera.

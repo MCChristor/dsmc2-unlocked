@@ -8,9 +8,9 @@ in the other docs and the private research notes; this is the outcome-level map.
 |---|---|---|
 | **Feature flags** (`HW_CAP_*`) | ProRes, IPP2, 3D LUT, anamorphic, extra gain modes — flip one bitmap; the licence check is a PIN compare, no signature. See [feature-unlock.md](feature-unlock.md). | A flag only enables what the hardware already supports. |
 | **Record / codec** | REDCODE compression-ratio clamp is a software limit. ProRes offered via the flag above. | Wavelet encode + ProRes run on the coprocessor silicon; ProRes is 4K-capped by its throughput. |
-| **Media / SSD** | Model-string + signature + IDENTIFY gates are all reproduced offline; `media-any` patch accepts any SATA SSD. See [media](../media/). | A drive still needs the raw speed (~300 MB/s for R3D). |
+| **Media / SSD** | Model-string + signature + IDENTIFY gates are all reproduced offline; `media-any` patch accepts any SATA SSD. See [media](../../media/). | A drive still needs the raw speed (~300 MB/s for R3D). |
 | **Sensor** | Extra gain modes behind the sensitivity flag. | Resolution and exposure floor are the physical sensor. |
-| **Frame rate** | — | Pixel-clock ÷ readout timing; no software FPS unlock. See [whats-possible.md](whats-possible.md). |
+| **Frame rate** | — | Pixel-clock ÷ readout timing; no software FPS unlock. See [whats-possible.md](../whats-possible.md). |
 | **Calibration** | Regenerate in-camera, back up, or transplant `.cal` (plaintext). See [calibration.md](calibration.md). | — |
 | **Colour / LUT** | IPP2, 3D LUT behind flags; standard `.cube` LUT import. | ISO range physical. |
 | **Monitor out** | Return/multi-feed behind flags. | HDMI brain port is 1080p-class; 4K only over SDI. |
@@ -19,7 +19,7 @@ in the other docs and the private research notes; this is the outcome-level map.
 | **Control plane (RCP)** | Fully mapped; a DIY serial/USB handle is feasible. | Latency-bound; not a throughput path. |
 | **Wi-Fi** | Radio is not capability-gated. | Redpine host-offload module. |
 | **Bootloader** | Boots a modified application image (no image signature check); partition table is extendable. | The signed environment block uses a key we do not hold — configuration goes through the unsigned config DB instead. |
-| **Display panel** | Force the panel-ID to accept a replacement 7-inch LCD. See [hardware/display-repair](../hardware/display-repair). | LVDS timing per panel. |
+| **Display panel** | Force the panel-ID to accept a replacement 7-inch LCD. See [hardware/display-repair](../../hardware/display-repair). | LVDS timing per panel. |
 
 ## The one-line summary
 
