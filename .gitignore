@@ -6,6 +6,11 @@
 *.mem
 *.rmf
 *.z
+*.su
+*.tar
+redone.[0-9]
+sundance*.bin
+iofpga*.bin
 *_privkey*
 *key*.txt
 fw_dump/
