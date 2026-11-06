@@ -62,13 +62,33 @@ identical (the per-model filename carries the camera-type tag, as on DSMC2).
 DSMC1 MX/Dragon bodies carry their own camera-type bytes in the same namespace as
 the DSMC2 crossgrade variable (see [feature-unlock.md](../features/feature-unlock.md)):
 
-| Tag | Body |
-|---|---|
-| `0x0f` | EPIC DRAGON (reference image above) |
+All four MX/Dragon bodies were pulled and unpacked (last build, v6.3.106). They
+confirm the DSMC2 crossgrade model exactly: the application binary is shared per
+**sensor**, and the model is set by two identity rows in `factory.db`.
 
-Other MX/Dragon tags appear in the same table as the DSMC2 `weapon`-family tags;
-the DSMC1 bodies are **not** the DSMC2 Epic-W / Scarlet-W, which are the `weapon`
-family (`0x11`/`0x16`/`0x17`).
+| Tag | Body | `CDB_FACTORY_TYPE` | `COMM_RCP_CAMERA_ID` | App binary |
+|---|---|---|---|---|
+| `0x0b` | EPIC (M-X) | `EPIC` | `EPIC` | M-X app (sha `4571cef1…`) |
+| `0x0e` | SCARLET (M-X) | `SCARLET` | `SCARLET` | M-X app (sha `4571cef1…`) |
+| `0x0f` | EPIC DRAGON | `DRAGON` | `DRAGON` | Dragon app (sha `9abec2a4…`) |
+| `0x10` | SCARLET DRAGON | `SCARLET_DRAGON` | `S-DRAGON` | Dragon app (sha `9abec2a4…`) |
+
+Key facts from the diff:
+
+- **The two M-X bodies share one identical binary; the two Dragon bodies share
+  another.** Epic vs Scarlet is purely the two `factory.db` identity rows — the
+  code is byte-for-byte the same. M-X vs Dragon is a genuine sensor difference
+  (different binary, 382 vs 333 package files).
+- **The bootloader is byte-identical across all four** (and only the filename
+  carries the `0x0b/0x0e/0x0f/0x10` tag), exactly as on DSMC2.
+- **Every body has the same 1804 `factory.db` parameters and 87 `HW_CAP_*`
+  flags** — identical feature surface within the family; the model name is the only
+  thing that changes.
+- The app exposes a camera-subtype message (`DEBUG_MSG_SET_CAMERA_SUBTYPE`) and an
+  `EpicScarlet` selector, the same identity machinery DSMC2 uses.
+
+These DSMC1 bodies are **not** the DSMC2 Epic-W / Scarlet-W, which are the
+`weapon` family (`0x11`/`0x16`/`0x17`).
 
 ## What differs from DSMC2
 
